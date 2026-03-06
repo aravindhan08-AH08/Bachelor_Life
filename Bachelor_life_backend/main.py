@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 import os
-from routers import room, Booking, user, owner
+from routers import room, Booking, user, owner, user_dashboard
 from db.database import Base, engine
 
 from models import owner_models, user_models, room_models, booking_models
@@ -24,3 +24,4 @@ app.include_router(owner.router, tags=["Owner"])
 app.include_router(user.router, tags=["User"])
 app.include_router(room.router, tags=["Rooms"])
 app.include_router(Booking.router, tags=["Booking"])
+app.include_router(user_dashboard.router, tags=["User Dashboard"])

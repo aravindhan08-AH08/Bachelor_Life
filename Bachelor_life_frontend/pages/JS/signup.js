@@ -79,16 +79,21 @@ if (signupForm) {
         alert("Account Created! Now login.");
         window.location.href = "login.html";
       } else {
-        const errorData = await response.json();
         let errorMsg = "Registration failed";
-
-        if (errorData.detail) {
-          if (Array.isArray(errorData.detail)) {
-            // FastAPI validation error detail is an array
-            errorMsg = errorData.detail.map(err => `${err.loc.join('.')}: ${err.msg}`).join("\n");
-          } else {
-            errorMsg = errorData.detail;
-          }
+        const contentType = response.headers.get("content-type");
+        
+        if (contentType && contentType.includes("application/json")) {
+            const errorData = await response.json();
+            if (errorData.detail) {
+              if (Array.isArray(errorData.detail)) {
+                errorMsg = errorData.detail.map(err => `${err.loc.join('.')}: ${err.msg}`).join("\n");
+              } else {
+                errorMsg = errorData.detail;
+              }
+            }
+        } else {
+            // Handle non-JSON errors (like 404 HTML pages)
+            errorMsg = `Server error (${response.status}). The page might be missing or the backend is offline.`;
         }
         alert("Error:\n" + errorMsg);
       }

@@ -60,8 +60,15 @@ if (loginForm) {
           window.location.href = "find_room.html";
         }
       } else {
-        const error = await response.json();
-        alert("Login Failed: " + (error.detail || "Invalid credentials"));
+        const contentType = response.headers.get("content-type");
+        let errorMsg = "Invalid credentials";
+        if (contentType && contentType.includes("application/json")) {
+          const error = await response.json();
+          errorMsg = error.detail || errorMsg;
+        } else {
+          errorMsg = `Server error (${response.status})`;
+        }
+        alert("Login Failed: " + errorMsg);
       }
     } catch (err) {
       console.error(err);

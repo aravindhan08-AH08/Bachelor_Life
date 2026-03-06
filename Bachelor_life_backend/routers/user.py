@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.database import get_db
 from models.user_models import Customer  # Correct Model-ah import pannunga
-from schema.user_schema import UserCreate, UserResponse
-from core.security import get_password_hash
+from schema.user_schema import UserCreate, UserResponse, LoginRequest
+from core.security import get_password_hash, verify_password, create_access_token
 from typing import List
 
 router = APIRouter(prefix="/user", tags=["User"])
@@ -66,3 +66,28 @@ def update_user(user_id: int, data: UserCreate, db: Session = Depends(get_db)):
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Update failed")
+
+# 5. User Login
+@router.post("/login")
+def login_user(data: LoginRequest, db: Session = Depends(get_db)):
+    user = db.query(Customer).filter(Customer.email == data.email).first()
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    if not verify_password(data.password, user.hashed_password):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    # Generate token (Even if frontend don't use it yet)
+    access_token = create_access_token(data={"sub": user.email})
+
+    return {
+        "message": "Login successful",
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user": {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone
+        }
+    }
