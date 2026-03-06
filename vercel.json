@@ -1,0 +1,59 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "Bachelor_Life_Backend/main.py",
+            "use": "@vercel/python"
+        },
+        {
+            "src": "Bachelor_life_frontend/**/*",
+            "use": "@vercel/static"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "Bachelor_Life_Backend/static/$1"
+        },
+        {
+            "src": "/rooms(.*)",
+            "dest": "Bachelor_Life_Backend/main.py"
+        },
+        {
+            "src": "/user(/.*)?",
+            "dest": "Bachelor_Life_Backend/main.py"
+        },
+        {
+            "src": "/owner(/.*)?",
+            "dest": "Bachelor_Life_Backend/main.py"
+        },
+        {
+            "src": "/booking(/.*)?",
+            "dest": "Bachelor_Life_Backend/main.py"
+        },
+        {
+            "src": "/contact(/.*)?",
+            "dest": "Bachelor_Life_Backend/main.py"
+        },
+        {
+            "src": "/user-dashboard(/.*)?",
+            "dest": "Bachelor_Life_Backend/main.py"
+        },
+        {
+            "src": "/pages/(.*)",
+            "dest": "Bachelor_life_frontend/pages/$1"
+        },
+        {
+            "src": "/(.*).html",
+            "dest": "Bachelor_life_frontend/$1.html"
+        },
+        {
+            "src": "/",
+            "dest": "Bachelor_life_frontend/index.html"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "Bachelor_life_frontend/$1"
+        }
+    ]
+}

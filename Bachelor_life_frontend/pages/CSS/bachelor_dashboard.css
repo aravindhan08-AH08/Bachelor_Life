@@ -1,0 +1,94 @@
+/* Bachelor Dashboard Specific Styles */
+
+:root {
+  --pending-yellow: #ffc107;
+  --confirmed-green: #28a745;
+  --rejected-red: #dc3545;
+}
+
+/* Status specific icon colors */
+.stat-icon.pending-icon {
+  color: var(--pending-yellow);
+  background-color: #fff9e6;
+}
+
+.stat-icon.confirmed-icon {
+  color: var(--confirmed-green);
+  background-color: #e8f5e9;
+}
+
+.stat-icon.credit-icon {
+  color: #6f42c1;
+  background-color: #f3e5f5;
+}
+
+/* Status Badges */
+.status-badge.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-badge.status-confirmed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-badge.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.status-badge.status-expired {
+  background-color: #e9ecef;
+  color: #6c757d;
+}
+
+/* View Details Button */
+.btn-view-details {
+  background-color: var(--primary-blue);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-view-details:hover {
+  background-color: var(--dark-blue);
+}
+
+.btn-cancel-request {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.2s;
+  margin-left: 5px;
+}
+
+.btn-cancel-request:hover {
+  background-color: #c82333;
+}
+
+.text-error {
+  color: var(--rejected-red);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bookings-table {
+    font-size: 14px;
+  }
+
+  .status-badge {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+}

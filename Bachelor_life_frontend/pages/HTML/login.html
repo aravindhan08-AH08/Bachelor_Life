@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../CSS/login.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <title>Bachelor Life | Login</title>
+  </head>
+
+  <body>
+    <nav>
+      <div class="logo">
+        <span class="logo-bachelor">Bachelor</span
+        ><span class="logo-life">Life</span>
+      </div>
+      <div class="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="find_room.html">Find Rooms</a>
+        <a href="post_room.html">Post Room</a>
+      </div>
+      <a href="login.html" class="login-btn">Login</a>
+    </nav>
+
+    <div class="login-container">
+      <div class="login-box">
+        <div class="icon"></div>
+        <h2>Welcome Back</h2>
+        <p>Sign in to your Bachelor Life account</p>
+
+        <!-- Role Selection -->
+        <div class="role-selection-group">
+          <label class="role-label">Login as:</label>
+          <div class="tab-buttons">
+            <button type="button" class="tab active" id="bachelorTab">
+              Bachelor
+            </button>
+            <button type="button" class="tab" id="ownerTab">Room Owner</button>
+          </div>
+        </div>
+        <input type="hidden" id="userRole" value="Bachelor" />
+
+        <form id="loginForm">
+          <div class="input-group">
+            <label>Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
+
+          <div class="input-group">
+            <label>Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn">Sign In</button>
+        </form>
+
+        <p class="signup-text">
+          Don't have an account? <a href="signup.html">Sign up</a>
+        </p>
+      </div>
+    </div>
+    <footer>
+      <p>© 2025 Bachelor Life | All Rights Reserved</p>
+      <a href="about.html">About Us |</a>
+      <a href="contact.html">Contact</a>
+    </footer>
+  </body>
+  <script src="../JS/api-config.js"></script>
+  <script src="../JS/login.js"></script>
+</html>

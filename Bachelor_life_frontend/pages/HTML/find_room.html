@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bachelor Life - Discover Your Perfect Room</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../CSS/find_room.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="container navbar-content">
+      <div class="logo">
+        <span class="logo-bachelor">Bachelor</span><span class="logo-life">Life</span>
+      </div>
+      <nav class="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="find_room.html">Find Rooms</a>
+        <a href="post_room.html">Post Room</a>
+      </nav>
+      <a href="login.html" class="login-btn">Login</a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      <section class="hero-section">
+        <h1>Discover Your Perfect Room</h1>
+        <div class="green-line"></div>
+        <p>
+          Browse through our curated collection of bachelor-friendly
+          accommodations
+        </p>
+      </section>
+
+      <section class="filter-box">
+        <div class="available-rooms">
+          <span class="indicator"></span>
+          Available Rooms (8)
+        </div>
+        <div class="filter-form">
+          <div class="input-group search-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" placeholder="Search location" />
+          </div>
+
+          <div class="input-group dropdown-room">
+            <select>
+              <option value="">All Room Types</option>
+              <option value="single">Single Room</option>
+              <option value="shared">Shared Room</option>
+              <option value="1bhk">1 BHK</option>
+              <option value="studio">2 BHK</option>
+            </select>
+            <i class="fas fa-chevron-down"></i>
+          </div>
+
+          <div class="input-group budget-slider">
+            <input type="range" min="0" max="50000" value="25000" id="budgetRange" />
+            <span class="max-budget">Max Budget: ₹25,000</span>
+          </div>
+
+          <button class="apply-filters-btn">Apply Filters</button>
+        </div>
+
+        <div class="amenities-filters">
+          <label><input type="checkbox" id="filter-wifi"> Wifi</label>
+          <label><input type="checkbox" id="filter-ac"> AC</label>
+          <label><input type="checkbox" id="filter-parking"> Parking</label>
+          <label><input type="checkbox" id="filter-gym"> Gym</label>
+          <label><input type="checkbox" id="filter-kitchen"> Kitchen</label>
+          <label><input type="checkbox" id="filter-security"> Security</label>
+        </div>
+      </section>
+
+      <div class="room-container">
+
+        <!-- Dynamic Content will be loaded here -->
+      </div>
+
+  </main>
+  <footer>
+    <p>© 2025 Bachelor Life | All Rights Reserved</p>
+    <a href="about.html">About Us |</a>
+    <a href="contact.html">Contact</a>
+  </footer>
+
+</body>
+<script src="../JS/api-config.js"></script>
+<script src="../JS/find_room.js"></script>
+
+</html>

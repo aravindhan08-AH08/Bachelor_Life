@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Owner Dashboard - Bachelor Life</title>
+    <link rel="stylesheet" href="../CSS/Index.css" />
+    <link rel="stylesheet" href="../CSS/owner_dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
+
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo-bachelor">Bachelor</span
+        ><span class="logo-life">Life</span>
+      </div>
+      <nav class="nav-links" id="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="find_room.html">Find Rooms</a>
+        <a href="post_room.html">Post Room</a>
+        <a href="owner_dashboard.html" class="active-link">Dashboard</a>
+      </nav>
+      <div class="nav-right-group">
+        <a href="#" class="login-btn">Logout</a>
+      </div>
+    </header>
+
+    <main class="dashboard-container">
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">
+            Welcome back, <span id="ownerName">Owner</span>!
+          </h1>
+          <p class="dashboard-subtitle">
+            Manage your listings and booking requests here.
+          </p>
+        </div>
+        <a href="post_room.html" class="post-new-btn">
+          <i class="fas fa-plus-circle"></i> Post New Room
+        </a>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-home"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalRooms">0</h3>
+            <p>Total Rooms Posted</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon active-listings">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="activeListings">0</h3>
+            <p>Active Listings</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon booking-requests">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalBookings">0</h3>
+            <p>Booking Requests</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- My Listings -->
+      <div class="section-header">
+        <h2 class="section-title">My Properties</h2>
+      </div>
+      <div class="listings-grid" id="listingsContainer">
+        <p class="loading-text">Loading properties...</p>
+      </div>
+
+      <!-- Booking Requests -->
+      <div class="section-header mt-50">
+        <h2 class="section-title">Recent Booking Requests</h2>
+      </div>
+      <div class="bookings-section">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Room Title</th>
+              <th>Tenant Name</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTableBody">
+            <tr>
+              <td colspan="4" class="no-data-cell">
+                No booking requests found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer>
+      <p>© 2025 Bachelor Life | All Rights Reserved</p>
+      <a href="about.html">About Us |</a>
+      <a href="contact.html">Contact</a>
+    </footer>
+  </body>
+  <script src="../JS/api-config.js"></script>
+  <script src="../JS/owner_dashboard.js"></script>
+</html>

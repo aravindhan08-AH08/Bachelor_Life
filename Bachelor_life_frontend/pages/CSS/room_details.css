@@ -1,0 +1,287 @@
+/* Specific styles for Room Details */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+.logo {
+  font-size: 1.6em;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.5px;
+}
+
+.logo-bachelor {
+  color: #fff;
+}
+
+.logo-life {
+  color: #fff;
+}
+
+.room-details-container {
+  max-width: 1000px;
+  margin: 100px auto 40px;
+  /* Increased top margin for sticky header */
+  padding: 30px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.image-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.main-image-container {
+  width: 100%;
+  height: 500px;
+  background: #f1f5f9;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.main-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Better for varying aspect ratios */
+  background: #000;
+}
+
+.thumbnails-container {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 5px 5px 15px;
+  scrollbar-width: thin;
+  scrollbar-color: #3b82f6 #f1f5f9;
+}
+
+.thumbnails-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.thumbnails-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.thumbnails-container::-webkit-scrollbar-thumb {
+  background: #3b82f6;
+  border-radius: 10px;
+}
+
+.thumb-image {
+  min-width: 120px;
+  width: 120px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.thumb-image:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.active-thumb {
+  border-color: #2563eb;
+  transform: scale(1.05);
+}
+
+.details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+}
+
+.details-title h1 {
+  font-size: 28px;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.details-price {
+  text-align: right;
+}
+
+.price-tag {
+  font-size: 24px;
+  font-weight: 700;
+  color: #2c3e50;
+}
+
+.deposit-tag {
+  font-size: 14px;
+  color: #666;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 40px;
+}
+
+.info-section h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #2c3e50;
+}
+
+.amenities-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #555;
+}
+
+.description-text {
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 30px;
+}
+
+.booking-card {
+  background: #f8f9fa;
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #e9ecef;
+  position: sticky;
+  top: 100px;
+}
+
+.booking-btn {
+  width: 100%;
+  padding: 15px;
+  background: #2c3e50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.booking-btn:hover {
+  background: #34495e;
+}
+
+.owner-info {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.owner-info h4 {
+  margin-bottom: 10px;
+}
+
+.owner-contact-item {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.owner-contact-item:last-child {
+  margin-bottom: 0;
+}
+
+.booking-btn:disabled {
+  background: #95a5a6;
+  cursor: not-allowed;
+}
+
+.video-frame {
+  border-radius: 8px;
+}
+
+.video-player {
+  border-radius: 8px;
+  max-height: 500px;
+  background: black;
+  width: 100%;
+  height: auto;
+}
+
+.tour-link {
+  color: #007bff;
+  text-decoration: underline;
+}
+
+#loading {
+  text-align: center;
+  padding: 50px;
+}
+
+#room-content {
+  display: none;
+}
+
+.price-container {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 5px;
+}
+
+#room-rent {
+  font-size: 24px;
+  font-weight: 700;
+  color: #166534;
+}
+
+#room-deposit {
+  font-size: 16px;
+  color: #15803d;
+  font-weight: 500;
+}
+
+#virtual-tour-section {
+  display: none;
+}
+
+#video-container {
+  margin-bottom: 30px;
+}
+
+.details-list {
+  list-style: none;
+  padding: 0;
+  color: #555;
+}
+
+.details-list li {
+  margin-bottom: 8px;
+}
+
+.interested-section h3 {
+  margin-bottom: 20px;
+}
+
+.interested-section p {
+  margin-bottom: 20px;
+  color: #666;
+  font-size: 14px;
+}

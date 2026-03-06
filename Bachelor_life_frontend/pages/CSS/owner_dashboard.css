@@ -1,0 +1,401 @@
+/* Basic variables imported from Index.css conceptually but defined here for independence if needed, 
+   though usually we rely on main stylesheet. Let's make it self-contained but consistent. */
+:root {
+  --primary-blue: #007bff;
+  --dark-blue: #045aaf;
+  --success-green: #4caf50;
+  --danger-red: #dc3545;
+  --light-bg: #f8f9fa;
+  --white: #ffffff;
+  --text-dark: #333;
+  --text-light: #666;
+  --border-color: #ddd;
+}
+
+body {
+  background-color: var(--light-bg);
+  font-family: "Poppins", sans-serif;
+}
+
+/* Reusing Navbar styles from Index.css via class names, but ensuring specific overrides if needed */
+
+.dashboard-container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  color: var(--dark-blue);
+  font-weight: 700;
+}
+
+.post-new-btn {
+  background-color: var(--success-green);
+  color: var(--white);
+  padding: 10px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s;
+}
+
+.post-new-btn:hover {
+  transform: translateY(-2px);
+  background-color: #43a047;
+}
+
+/* Stats Cards */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.stat-icon {
+  width: 60px;
+  height: 60px;
+  background-color: #e3f2fd;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: var(--primary-blue);
+}
+
+.stat-info h3 {
+  font-size: 2rem;
+  color: var(--dark-blue);
+  margin-bottom: 5px;
+}
+
+.stat-info p {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Section Tabs/Headers */
+.section-header {
+  margin-bottom: 20px;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 10px;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+/* My Listings Grid */
+.listings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+  margin-bottom: 50px;
+}
+
+.listing-card {
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s;
+  position: relative;
+}
+
+.listing-card:hover {
+  transform: translateY(-5px);
+}
+
+.listing-image {
+  height: 200px;
+  overflow: hidden;
+}
+
+.listing-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.listing-content {
+  padding: 20px;
+}
+
+.listing-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.listing-details {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.listing-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+}
+
+.listing-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-action {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.btn-edit {
+  background-color: #fcebbb;
+  color: #d97706;
+  margin-right: 5px;
+}
+
+.btn-delete {
+  background-color: var(--danger-red);
+  color: var(--white);
+}
+
+/* Booking Requests Table */
+.bookings-section {
+  background: var(--white);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.bookings-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.bookings-table th,
+.bookings-table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.bookings-table th {
+  background-color: #f8f9fa;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.status-badge {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-confirmed {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.status-rejected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.btn-accept {
+  background-color: var(--success-green);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  margin-right: 5px;
+}
+
+.btn-reject {
+  background-color: var(--danger-red);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+/* Premium Action Buttons */
+.btn-approve-small {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-approve-small:hover {
+  background-color: #16a34a;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);
+}
+
+.btn-reject-small {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-reject-small:hover {
+  background-color: #dc2626;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+}
+
+.btn-contact-small {
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-contact-small:hover {
+  background-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.d-flex-gap-5 {
+  display: flex;
+  gap: 8px;
+}
+
+/* Status Classes for Dynamic JS */
+.status-text-item {
+  background: none;
+  padding: 0;
+}
+
+.status-text-active {
+  color: green;
+}
+
+.status-text-inactive {
+  color: red;
+}
+
+/* Specific Style Overrides */
+.dashboard-subtitle {
+  color: #666;
+}
+
+.stat-icon.active-listings {
+  color: #4caf50;
+  background: #e8f5e9;
+}
+
+.stat-icon.booking-requests {
+  color: #ff9800;
+  background: #fff3e0;
+}
+
+.loading-text {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 20px;
+}
+
+.mt-50 {
+  margin-top: 50px;
+}
+
+.no-data-cell {
+  text-align: center;
+}
+
+/* Empty State Styling */
+.empty-state-container {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+}
+
+.empty-state-text {
+  margin-top: 10px;
+}
+
+.empty-state-btn {
+  margin-top: 20px;
+}
+
+.tenant-id {
+  color: #999;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .bookings-table {
+    display: block;
+    overflow-x: auto;
+  }
+}

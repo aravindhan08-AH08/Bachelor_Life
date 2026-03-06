@@ -1,0 +1,214 @@
+:root {
+  --primary-blue: #007bff;
+  --dark-blue: #325ab8;
+  --light-bg: #f3f8ff;
+  --white: #ffffff;
+  --text-dark: #1e293b;
+  --text-light: #64748b;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: var(--light-bg);
+}
+
+/* Navbar Styling */
+header.navbar {
+  background-color: var(--dark-blue);
+  color: var(--white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 60px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  width: 100%;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.5px;
+}
+
+.logo-bachelor,
+.logo-life {
+  color: #fff;
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.login-btn {
+  background-color: #3b82f6;
+  padding: 8px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: white;
+  font-weight: 700;
+}
+
+/* Container & Card */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px);
+  /* Subtract approximate header/footer height */
+  padding: 40px 20px;
+}
+
+.form-card {
+  background-color: #fff;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  padding: 40px;
+  text-align: center;
+}
+
+.home-icon {
+  width: 50px;
+  margin-bottom: 10px;
+}
+
+.form-card h2 {
+  color: var(--dark-blue);
+  margin-bottom: 5px;
+  font-size: 24px;
+}
+
+.form-card p {
+  color: var(--text-light);
+  font-size: 14px;
+  margin-bottom: 25px;
+}
+
+.role-selection-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.role-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #153e90;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tab-buttons {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  cursor: pointer;
+  border: 2px solid #e2e8f0;
+  background: white;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  /* Made bolder */
+  color: #64748b;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab:hover {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.tab.active {
+  border-color: #2563eb;
+  background: #eff6ff;
+  color: #2563eb;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1);
+}
+
+.form-label {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #1e293b;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  background-color: white;
+}
+
+input:focus, select:focus {
+  border-color: #3b82f6;
+}
+
+.btn-create {
+  width: 100%;
+  background-color: var(--dark-blue);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-top: 10px;
+}
+
+.btn-create:hover {
+  background-color: #2563eb;
+}
+
+.signin-text {
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+.signin-text a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+footer {
+  text-align: center;
+  padding: 15px;
+  background: var(--primary-blue);
+  color: white;
+}
+
+footer a {
+  color: var(--white);
+  text-decoration: none;
+}
