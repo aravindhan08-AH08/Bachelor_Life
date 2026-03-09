@@ -48,14 +48,25 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Database Tables Creation (Ensure models are imported before this)
+# Database Tables Creation & Auto-Migration
 try:
     print("DEBUG: Attempting to create tables...")
     Base.metadata.create_all(bind=engine)
+    
+    # AUTO-MIGRATION: Add gender column if it doesn't exist
+    from sqlalchemy import text
+    with engine.connect() as conn:
+        try:
+            conn.execute(text("ALTER TABLE customers ADD COLUMN IF NOT EXISTS gender VARCHAR;"))
+            conn.execute(text("ALTER TABLE owners ADD COLUMN IF NOT EXISTS gender VARCHAR;"))
+            conn.commit()
+            print("DEBUG: Auto-migration success (gender column ensured).")
+        except Exception as migration_error:
+            print(f"DEBUG: Migration skipped/failed: {migration_error}")
+            
     print("DEBUG: Tables created successfully.")
 except Exception as e:
     print(f"Database creation failed: {e}")
-    # Don't crash here, but diagnostics reflect on /ping
 
 # Health Check Diagnostic
 # Version: 1.0.3 - Detailed Diagnostics
