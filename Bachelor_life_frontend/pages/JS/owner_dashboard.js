@@ -88,21 +88,28 @@ async function renderDashboard() {
           images = [];
         }
 
-        if (images.length > 0) {
-          const rawPath = images[0];
-          let pathStr = rawPath.toString().trim().replace(/^['"]|['"]$/g, '');
+        const getCleanPath = (path) => {
+          if (!path) return "";
+          let pathStr = path.toString().trim();
+          // Remove extra quotes or escaped quotes
+          pathStr = pathStr.replace(/^['"]|['"]$/g, '').replace(/\\"/g, '"');
 
-          if (pathStr.startsWith("data:")) {
-            imgSrc = pathStr;
-          } else {
-            if (pathStr.startsWith('http')) {
-              imgSrc = pathStr;
-            } else {
-              const cleanPath = pathStr.replace(/\\/g, "/").replace(/^\/+/, "");
-              imgSrc = `${apiBase}/${cleanPath}`;
-            }
-          }
-        }
+          if (pathStr.startsWith("data:")) return pathStr;
+          if (pathStr.startsWith("http")) return pathStr;
+
+          // Remove any accidental folder prefixes if they exist in the path string
+          let cleanP = pathStr.replace(/\\/g, "/");
+          cleanP = cleanP.replace(/^Bachelor_life_backend\//, "")
+            .replace(/^Bachelor_life_frontend\//, "")
+            .replace(/^\/+/, "");
+
+          // Final absolute URL construction
+          const finalUrl = `${apiBase}/${cleanP}`;
+          console.log("DEBUG: Final Image URL (Dashboard):", finalUrl);
+          return finalUrl;
+        };
+
+        imgSrc = getCleanPath(images[0] || "");
 
         card.innerHTML = `
                     <div class="listing-image">

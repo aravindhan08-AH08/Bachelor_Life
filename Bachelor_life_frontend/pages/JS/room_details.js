@@ -200,14 +200,22 @@ function renderRoomDetails(room) {
     const getCleanPath = (path) => {
       if (!path) return "";
       let pathStr = path.toString().trim();
-      // Remove extra quotes if some double-serialization happened
-      pathStr = pathStr.replace(/^['"]|['"]$/g, '');
+      // Remove extra quotes or escaped quotes
+      pathStr = pathStr.replace(/^['"]|['"]$/g, '').replace(/\\"/g, '"');
 
       if (pathStr.startsWith("data:")) return pathStr;
       if (pathStr.startsWith("http")) return pathStr;
 
-      const cleanP = pathStr.replace(/\\/g, "/").replace(/^\/+/, "");
-      return `${apiBase}/${cleanP}`;
+      // Remove any accidental folder prefixes if they exist in the path string
+      let cleanP = pathStr.replace(/\\/g, "/");
+      cleanP = cleanP.replace(/^Bachelor_life_backend\//, "")
+        .replace(/^Bachelor_life_frontend\//, "")
+        .replace(/^\/+/, "");
+
+      // Final absolute URL construction
+      const finalUrl = `${apiBase}/${cleanP}`;
+      console.log("DEBUG: Final Image URL (Room Details):", finalUrl);
+      return finalUrl;
     };
 
     // Main Image
