@@ -64,7 +64,13 @@ def ping():
             conn.execute(text("SELECT 1"))
             db_status = "Connected"
     except Exception as e:
-        db_status = f"Disconnected: {str(e)}"
+        error_detail = str(e)
+        if "password authentication failed" in error_detail:
+            db_status = "Disconnected: Wrong Password or Username"
+        elif "Cannot assign requested address" in error_detail:
+            db_status = "Disconnected: IPv6/Direct connection failed (Switch to Pooler!)"
+        else:
+            db_status = f"Disconnected: {error_detail[:150]}"
 
     return {
         "version": "1.0.3",
