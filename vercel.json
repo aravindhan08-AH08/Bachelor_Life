@@ -40,6 +40,10 @@
             "dest": "Bachelor_life_backend/main.py"
         },
         {
+            "src": "/ping",
+            "dest": "Bachelor_life_backend/main.py"
+        },
+        {
             "src": "/pages/(.*)",
             "dest": "Bachelor_life_frontend/pages/$1"
         },
