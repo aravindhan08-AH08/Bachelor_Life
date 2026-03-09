@@ -1,6 +1,13 @@
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 import os
+import sys
+
+# Intha path fixing code Vercel-la folders-ah kandupidi kka uthavum
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(BASE_DIR)
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from routers import room, Booking, user, owner, user_dashboard
 from db.database import Base, engine
 
@@ -8,10 +15,24 @@ from models import owner_models, user_models, room_models, booking_models
 
 app = FastAPI(title="Welcome to BachelorLife Backend")
 
+# Enable CORS for all origins (Important for Vercel/Same-Origin issues)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 try:
     Base.metadata.create_all(bind=engine)
 except Exception as e:
     print(f"Database creation failed: {e}")
+
+# Health Check Diagnostic
+@app.get("/ping")
+def ping():
+    return {"status": "online", "message": "Backend is active!"}
 
 # Static files handled by Vercel directly or skip folder creation for read-only environment
 # app.mount("/static", StaticFiles(directory="static"), name="static")
