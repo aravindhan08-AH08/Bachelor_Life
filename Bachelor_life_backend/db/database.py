@@ -8,19 +8,31 @@ import urllib.parse
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    # Remove problematic query parameters like pgbouncer
+    # 1. Remove query params (like pgbouncer)
     if "?" in DATABASE_URL:
-        base_url, query = DATABASE_URL.split("?", 1)
-        # We keep the base URL, but we need to be careful with SSL
-        DATABASE_URL = base_url
+        DATABASE_URL = DATABASE_URL.split("?", 1)[0]
 
-    # SQLAlchemy requires "postgresql://" not "postgres://"
+    # 2. Fix protocol
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
     elif "postgresql://" in DATABASE_URL and "+psycopg2" not in DATABASE_URL:
         DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
-    
-    # Re-add SSL if not present (since we stripped params)
+
+    # 3. Handle '@' in password (Robust rsplit)
+    try:
+        # Format: protocol://user:pass@host:port/db
+        prefix, rest = DATABASE_URL.split("://", 1)
+        if "@" in rest:
+            creds, destination = rest.rsplit("@", 1) # Split ONLY at the last '@'
+            if ":" in creds:
+                user, password = creds.split(":", 1)
+                # Re-encode password safely
+                encoded_password = urllib.parse.quote_plus(password)
+                DATABASE_URL = f"{prefix}://{user}:{encoded_password}@{destination}"
+    except Exception as e:
+        print(f"URL Parsing Error: {e}")
+
+    # 4. Add SSL
     if "sslmode" not in DATABASE_URL:
         DATABASE_URL += "?sslmode=require"
 else:
