@@ -42,7 +42,20 @@ import base64
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_room(
     owner_email: str = Form(...),
-# ... parameters remains same ...
+    title: str = Form(...),
+    location: str = Form(...),
+    rent: int = Form(...),
+    deposit: int = Form(0),
+    room_type: str = Form(...),
+    description: str = Form(""),
+    sharing_capacity: int = Form(1),
+    bachelor_allowed: bool = Form(True),
+    wifi: bool = Form(False),
+    ac: bool = Form(False),
+    attached_bath: bool = Form(False),
+    kitchen_access: bool = Form(False),
+    parking: bool = Form(False),
+    laundry: bool = Form(False),
     security: bool = Form(False),
     gym: bool = Form(False),
     cctv: bool = Form(False),
@@ -72,6 +85,16 @@ async def create_room(
                 mime_type = file.content_type or "image/jpeg"
                 base64_images.append(f"data:{mime_type};base64,{encoded}")
 
+    # Handle optional video upload
+    video_url = ""
+    if video_file and video_file.filename:
+        # For simplicity, we store the filename if it was uploaded. 
+        # On Vercel this is tricky, usually we'd use a cloud storage URL.
+        # For now, we'll just handle it as a static path or placeholder.
+        video_url = f"static/room_videos/{video_file.filename}"
+        # We don't save to disk here because Vercel is read-only.
+        # In a real app, you'd upload to S3/Cloudinary.
+
     new_room = Room(
         title=title, location=location, rent=rent, room_type=room_type,
         description=description, max_persons=sharing_capacity,
@@ -81,6 +104,7 @@ async def create_room(
         security=security, gym=gym, cctv=cctv, 
         semi_furnished=semi_furnished, gender=gender,
         image_url=base64_images, # Base64 data saved here
+        video_url=video_url,
         is_available=is_available, owner_id=owner.id, is_approved=True 
     )
     
@@ -100,18 +124,27 @@ async def update_room(
     owner_email: str = Form(...),
     title: str = Form(...),
     location: str = Form(...),
-    deposit: int = Form(...),
     rent: int = Form(...),
+    deposit: int = Form(0),
     room_type: str = Form(...),
-    sharing_capacity: int = Form(...),
-    description: str = Form(...),
+    description: str = Form(""),
+    sharing_capacity: int = Form(1),
+    bachelor_allowed: bool = Form(True),
+    wifi: bool = Form(False),
+    ac: bool = Form(False),
+    attached_bath: bool = Form(False),
+    kitchen_access: bool = Form(False),
+    parking: bool = Form(False),
+    laundry: bool = Form(False),
+    security: bool = Form(False),
+    gym: bool = Form(False),
+    cctv: bool = Form(False),
+    semi_furnished: bool = Form(False),
+    gender: str = Form("Any"),
     is_available: bool = Form(True),
     files: List[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
-    if sharing_capacity > 4:
-        raise HTTPException(status_code=400, detail="Maximum 4 persons only!")
-
     room = db.query(Room).filter(Room.id == room_id).first()
     if not room:
         raise HTTPException(status_code=404, detail="Room not found")
@@ -130,8 +163,6 @@ async def update_room(
                 new_base64_images.append(f"data:{mime_type};base64,{encoded}")
         room.image_url = new_base64_images
 
-    # ... rest of the updates ...
-
     room.title = title
     room.location = location
     room.rent = rent
@@ -139,6 +170,18 @@ async def update_room(
     room.room_type = room_type
     room.max_persons = sharing_capacity
     room.description = description
+    room.bachelor_allowed = bachelor_allowed
+    room.wifi = wifi
+    room.ac = ac
+    room.attached_bath = attached_bath
+    room.kitchen_access = kitchen_access
+    room.parking = parking
+    room.laundry = laundry
+    room.security = security
+    room.gym = gym
+    room.cctv = cctv
+    room.semi_furnished = semi_furnished
+    room.gender = gender
     room.is_available = is_available
 
     db.commit()

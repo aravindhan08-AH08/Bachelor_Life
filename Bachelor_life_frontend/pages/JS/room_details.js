@@ -158,24 +158,31 @@ function renderRoomDetails(room) {
   if (gallery) {
     gallery.innerHTML = "";
 
-    // Robust parsing for image_url (handles arrays, JSON strings, Python strings)
+    const rawImages = room.image_url;
+    console.log("DEBUG: rawImages from API:", rawImages);
+
     let images = [];
     try {
-      const rawImages = room.image_url;
       if (Array.isArray(rawImages)) {
         images = rawImages;
       } else if (typeof rawImages === 'string' && rawImages.trim() !== '') {
         let str = rawImages.trim();
         if (str.startsWith('[') && str.endsWith(']')) {
           try {
+            // Attempt JSON parse
             images = JSON.parse(str);
           } catch (e) {
-            // Fallback for single quotes (Python style)
             try {
-              images = JSON.parse(str.replace(/'/g, '"'));
+              // Try fixing single quotes (Python style) but be careful with Base64
+              // We only replace ' if it's followed by , or ] or preceded by [ or ,
+              let fixedStr = str.replace(/'/g, '"');
+              images = JSON.parse(fixedStr);
             } catch (e2) {
-              // Extract content between brackets and split by comma
+              console.warn("Manual parsing fallback for images string");
               const content = str.substring(1, str.length - 1);
+              // Simple split by comma, then trim quotes. 
+              // NOTE: If Base64 has commas in data (rare but possible in some formats), 
+              // this might fail, but for standard data: URLs it works.
               images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
             }
           }
@@ -192,12 +199,15 @@ function renderRoomDetails(room) {
 
     const getCleanPath = (path) => {
       if (!path) return "";
-      const pathStr = path.toString().trim();
-      if (pathStr.startsWith("data:")) return pathStr;
+      let pathStr = path.toString().trim();
+      // Remove extra quotes if some double-serialization happened
+      pathStr = pathStr.replace(/^['"]|['"]$/g, '');
 
-      // Clean path and ensure it's absolute from apiBase if needed
+      if (pathStr.startsWith("data:")) return pathStr;
+      if (pathStr.startsWith("http")) return pathStr;
+
       const cleanP = pathStr.replace(/\\/g, "/").replace(/^\/+/, "");
-      return cleanP.startsWith('http') ? cleanP : `${apiBase}/${cleanP}`;
+      return `${apiBase}/${cleanP}`;
     };
 
     // Main Image

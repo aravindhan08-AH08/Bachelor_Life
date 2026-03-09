@@ -71,7 +71,6 @@ async function renderDashboard() {
               try {
                 images = JSON.parse(str);
               } catch (e) {
-                // Fallback for single quotes (Python style)
                 try {
                   images = JSON.parse(str.replace(/'/g, '"'));
                 } catch (e2) {
@@ -91,11 +90,17 @@ async function renderDashboard() {
 
         if (images.length > 0) {
           const rawPath = images[0];
-          if (rawPath.toString().startsWith("data:")) {
-            imgSrc = rawPath;
+          let pathStr = rawPath.toString().trim().replace(/^['"]|['"]$/g, '');
+
+          if (pathStr.startsWith("data:")) {
+            imgSrc = pathStr;
           } else {
-            const cleanPath = rawPath.toString().replace(/\\/g, "/").replace(/^\/+/, "");
-            imgSrc = cleanPath.startsWith('http') ? cleanPath : `${apiBase}/${cleanPath}`;
+            if (pathStr.startsWith('http')) {
+              imgSrc = pathStr;
+            } else {
+              const cleanPath = pathStr.replace(/\\/g, "/").replace(/^\/+/, "");
+              imgSrc = `${apiBase}/${cleanPath}`;
+            }
           }
         }
 
