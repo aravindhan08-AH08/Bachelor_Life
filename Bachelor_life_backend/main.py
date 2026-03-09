@@ -31,26 +31,32 @@ except Exception as e:
     print(f"Database creation failed: {e}")
 
 # Health Check Diagnostic
-# Version: 1.0.2 - URL Fix
+# Version: 1.0.3 - Detailed Diagnostics
 @app.get("/ping")
 def ping():
     db_status = "Unknown"
     env_detected = "DATABASE_URL" in os.environ
     mode = "Cloud" if env_detected else "Local Fallback"
     
-    # Censor URL for safety
+    # Advanced URL diagnostics
     raw_url = os.getenv("DATABASE_URL", "None")
+    db_user = "None"
     safe_url = "None"
+    
     if raw_url != "None":
         try:
-            if "@" in raw_url:
-                rest = raw_url.split("://", 1)[1]
-                host = rest.rsplit("@", 1)[1]
-                safe_url = "postgresql://***:***@" + host
-            else:
-                safe_url = raw_url
+            # Simple parsing for diagnostics
+            if "://" in raw_url:
+                prefix, rest = raw_url.split("://", 1)
+                if "@" in rest:
+                    creds, host = rest.rsplit("@", 1)
+                    if ":" in creds:
+                        db_user = creds.split(":", 1)[0]
+                    else:
+                        db_user = creds
+                    safe_url = f"{prefix}://{db_user}:****@{host}"
         except:
-            safe_url = "Censored-Error"
+            db_user = "Parsing-Error"
 
     try:
         from sqlalchemy import text
@@ -61,10 +67,11 @@ def ping():
         db_status = f"Disconnected: {str(e)}"
 
     return {
-        "version": "1.0.2",
+        "version": "1.0.3",
         "status": "online", 
         "db_status": db_status,
         "env_check": f"DATABASE_URL detected: {env_detected}",
+        "db_username": db_user,
         "database_url_preview": safe_url,
         "mode": mode,
         "vercel_env": os.getenv("VERCEL", "Not-Detected")
