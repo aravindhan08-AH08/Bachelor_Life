@@ -9,6 +9,7 @@ class Owner(Base):
     owner_name = Column(String)
     phone = Column(String)
     email = Column(String, unique=True)
+    gender = Column(String, nullable=True) # Adding gender
     hashed_password = Column(String)
     
     rooms = relationship("Room", back_populates="owner")

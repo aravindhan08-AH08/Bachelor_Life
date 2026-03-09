@@ -5,6 +5,7 @@ class OwnerBase(BaseModel):
     owner_name: str
     phone: str
     email: EmailStr
+    gender: Optional[str] = "Not Specified" # Adding gender
 
 class OwnerCreate(OwnerBase):
     password: str 

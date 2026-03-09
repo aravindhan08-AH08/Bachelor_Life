@@ -35,6 +35,7 @@ def create_owner(data: OwnerCreate, db: Session = Depends(get_db)):
         owner_name=data.owner_name,
         phone=data.phone,
         email=data.email,
+        gender=data.gender,
         hashed_password=hashed_pwd
     )
     db.add(new_owner)

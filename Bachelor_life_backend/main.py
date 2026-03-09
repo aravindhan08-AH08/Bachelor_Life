@@ -134,9 +134,19 @@ def home():
 @app.get("/init-db")
 def init_db():
     try:
-        from models import owner_models, user_models, room_models, booking_models
+        from models import Owner, Customer, Room, Booking
         Base.metadata.create_all(bind=engine)
-        return {"message": "Database tables initialized successfully"}
+        
+        # SQL to ensure gender column exists (Since create_all won't update existing tables)
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            # 1. Check/Add in Customers table
+            conn.execute(text("ALTER TABLE customers ADD COLUMN IF NOT EXISTS gender VARCHAR;"))
+            # 2. Check/Add in Owners table
+            conn.execute(text("ALTER TABLE owners ADD COLUMN IF NOT EXISTS gender VARCHAR;"))
+            conn.commit()
+            
+        return {"message": "Database tables and columns initialized successfully"}
     except Exception as e:
         return {"error": str(e), "traceback": traceback.format_exc()}
 
