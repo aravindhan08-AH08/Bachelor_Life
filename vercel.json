@@ -16,31 +16,7 @@
             "dest": "Bachelor_life_backend/static/$1"
         },
         {
-            "src": "/rooms(.*)",
-            "dest": "Bachelor_life_backend/main.py"
-        },
-        {
-            "src": "/user(/.*)?",
-            "dest": "Bachelor_life_backend/main.py"
-        },
-        {
-            "src": "/owner(/.*)?",
-            "dest": "Bachelor_life_backend/main.py"
-        },
-        {
-            "src": "/booking(/.*)?",
-            "dest": "Bachelor_life_backend/main.py"
-        },
-        {
-            "src": "/contact(/.*)?",
-            "dest": "Bachelor_life_backend/main.py"
-        },
-        {
-            "src": "/user-dashboard(/.*)?",
-            "dest": "Bachelor_life_backend/main.py"
-        },
-        {
-            "src": "/ping",
+            "src": "/(user|owner|room|booking|ping|init-db)(/.*)?",
             "dest": "Bachelor_life_backend/main.py"
         },
         {
