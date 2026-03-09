@@ -33,6 +33,9 @@ except Exception as e:
 @app.get("/ping")
 def ping():
     db_status = "Unknown"
+    env_detected = "DATABASE_URL" in os.environ
+    mode = "Cloud" if env_detected else "Local Fallback"
+    
     try:
         from sqlalchemy import text
         with engine.connect() as conn:
@@ -44,7 +47,9 @@ def ping():
     return {
         "status": "online", 
         "db_status": db_status,
-        "base_dir": BASE_DIR
+        "env_check": f"DATABASE_URL detected: {env_detected}",
+        "mode": mode,
+        "vercel_env": os.getenv("VERCEL", "Not-Detected")
     }
 
 # Static files handled by Vercel directly or skip folder creation for read-only environment
