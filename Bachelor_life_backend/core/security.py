@@ -1,3 +1,4 @@
+import hashlib
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -12,19 +13,21 @@ SECRET_KEY = "bachelor_life_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
+# Version: 1.0.5 (SHA-256 Pre-Hashing)
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-import hashlib
-
 def verify_password(plain_password, hashed_password):
-    # Pre-hash to 64-char hex to avoid bcrypt 72-byte limit
-    pre_hashed = hashlib.sha256(plain_password.encode()).hexdigest()
+    # Pre-hash to ensure fixed 64-character input to bcrypt
+    # This prevents the 'password cannot be longer than 72 bytes' error.
+    hash_obj = hashlib.sha256(plain_password.encode())
+    pre_hashed = hash_obj.hexdigest()
     return pwd_context.verify(pre_hashed, hashed_password)
 
 def get_password_hash(password):
-    # Pre-hash to 64-char hex to avoid bcrypt 72-byte limit
-    pre_hashed = hashlib.sha256(password.encode()).hexdigest()
+    # Pre-hash to ensure fixed 64-character input to bcrypt
+    hash_obj = hashlib.sha256(password.encode())
+    pre_hashed = hash_obj.hexdigest()
     return pwd_context.hash(pre_hashed)
 
 def create_access_token(data: dict):
@@ -33,7 +36,6 @@ def create_access_token(data: dict):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# Intha function thaan unga error-ah fix pannum
 def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
