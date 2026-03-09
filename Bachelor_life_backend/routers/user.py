@@ -21,6 +21,7 @@ def create_user(data: UserCreate, db: Session = Depends(get_db)):
         name=data.name,
         phone=data.phone,
         email=data.email,
+        gender=data.gender,
         hashed_password=hashed_pwd
     )
     try:

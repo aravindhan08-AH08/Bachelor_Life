@@ -8,4 +8,5 @@ class Customer(Base):
     name = Column(String)
     phone = Column(String)
     email = Column(String, unique=True)
+    gender = Column(String)
     hashed_password = Column(String)

@@ -4,6 +4,7 @@ class UserBase(BaseModel):
     name: str 
     phone: str
     email: EmailStr
+    gender: str # Adding gender field
 
 class UserCreate(UserBase):
     password: str

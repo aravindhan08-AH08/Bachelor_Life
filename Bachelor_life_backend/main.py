@@ -25,17 +25,17 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 # Global Exception Handler (Only for UNHANDLED server crashes)
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    # If it's a known FastAPI error (like 400, 404, 401), let it be
-    if isinstance(exc, (StarletteHTTPException, HTTPException)):
+    # Let FastAPI handle validation and defined HTTP errors normally
+    if isinstance(exc, (StarletteHTTPException, HTTPException, RequestValidationError)):
         return await http_exception_handler(request, exc)
     
-    # If it's a developer error / crash, show details
+    # Generic Server Crash Details
     return JSONResponse(
         status_code=500,
         content={
             "error_type": type(exc).__name__,
             "error_detail": str(exc),
-            "traceback": traceback.format_exc() if os.getenv("DEBUG") else "Internal Server Error"
+            "traceback": traceback.format_exc() if os.getenv("VERCEL") else "Check logs"
         }
     )
 
