@@ -43,8 +43,12 @@ async def create_room(
     laundry: bool = Form(False),
     security: bool = Form(False),
     gym: bool = Form(False),
+    cctv: bool = Form(False), # Parameter-ah sethaachu
+    semi_furnished: bool = Form(False), # Parameter-ah sethaachu
+    gender: str = Form("Any"), # Parameter-ah sethaachu
     is_available: bool = Form(True),
     files: List[UploadFile] = File(...),
+    video_file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
     # Constraint Check: Increased to 10 for Room/PG/BHK
@@ -58,26 +62,14 @@ async def create_room(
     if not owner:
         raise HTTPException(status_code=404, detail="Owner email not found!")
 
-    # Missing fields from Form
-    gender: str = Form("Any"),
-    cctv: bool = Form(False),
-    semi_furnished: bool = Form(False),
-
     saved_paths = []
     if files:
         for file in files:
             if file.filename:
-                try:
-                    # Ensure path exists, skip if read-only
-                    os.makedirs(UPLOAD_DIR, exist_ok=True)
-                    file_path = f"{UPLOAD_DIR}/{file.filename}"
-                    with open(file_path, "wb") as buffer:
-                        shutil.copyfileobj(file.file, buffer)
-                    saved_paths.append(file_path)
-                except Exception as e:
-                    print(f"File Save Error (Vercel): {e}")
-                    # Optionally, store filename only if save fails
-                    saved_paths.append(f"temp_{file.filename}")
+                # VERCEL FIX: Skip actual writing to disk, just store the filename
+                # If you want real images, Cloudinary integration is needed.
+                temp_path = f"static/room_images/{file.filename}"
+                saved_paths.append(temp_path)
 
     new_room = Room(
         title=title, location=location, rent=rent, room_type=room_type,
