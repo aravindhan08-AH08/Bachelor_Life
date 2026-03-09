@@ -17,16 +17,22 @@ def create_user(data: UserCreate, db: Session = Depends(get_db)):
 
     hashed_pwd = get_password_hash(data.password)
 
-    new_user = Customer( # This is use the User model or table
+    new_user = Customer( 
         name=data.name,
         phone=data.phone,
         email=data.email,
         hashed_password=hashed_pwd
     )
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-    return new_user
+    try:
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+        return new_user
+    except Exception as e:
+        db.rollback()
+        # Log the error for debugging
+        print(f"DEBUG: signup error: {e}")
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
 
 # 2. Get All Users
 @router.get("/", response_model=List[UserResponse])
