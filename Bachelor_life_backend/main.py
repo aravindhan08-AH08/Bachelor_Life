@@ -31,12 +31,23 @@ except Exception as e:
     print(f"Database creation failed: {e}")
 
 # Health Check Diagnostic
+# Version: 1.0.1 - Force Commit
 @app.get("/ping")
 def ping():
     db_status = "Unknown"
     env_detected = "DATABASE_URL" in os.environ
     mode = "Cloud" if env_detected else "Local Fallback"
     
+    # Censor URL for safety
+    raw_url = os.getenv("DATABASE_URL", "None")
+    safe_url = "None"
+    if raw_url != "None":
+        if "@" in raw_url:
+            parts = raw_url.split("@")
+            safe_url = "postgresql://***:***@" + parts[1]
+        else:
+            safe_url = raw_url
+
     try:
         from sqlalchemy import text
         with engine.connect() as conn:
@@ -46,9 +57,11 @@ def ping():
         db_status = f"Disconnected: {str(e)}"
 
     return {
+        "version": "1.0.1",
         "status": "online", 
         "db_status": db_status,
         "env_check": f"DATABASE_URL detected: {env_detected}",
+        "database_url_preview": safe_url, # Check if pgbouncer is still here
         "mode": mode,
         "vercel_env": os.getenv("VERCEL", "Not-Detected")
     }
