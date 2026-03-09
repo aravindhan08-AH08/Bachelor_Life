@@ -122,6 +122,15 @@ if os.path.exists("static"):
 def home():
     return {"message": "Welcome to BachelorLife"}
 
+@app.get("/init-db")
+def init_db():
+    try:
+        from models import owner_models, user_models, room_models, booking_models
+        Base.metadata.create_all(bind=engine)
+        return {"message": "Database tables initialized successfully"}
+    except Exception as e:
+        return {"error": str(e), "traceback": traceback.format_exc()}
+
 # Routers inclusion
 app.include_router(owner.router, tags=["Owner"])
 app.include_router(user.router, tags=["User"])
