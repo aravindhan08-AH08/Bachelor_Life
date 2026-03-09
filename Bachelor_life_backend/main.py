@@ -10,10 +10,9 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-from routers import room, Booking, user, owner, user_dashboard
+from routers import room as room_router, Booking as booking_router, user as user_router, owner as owner_router, user_dashboard as user_dashboard_router
 from db.database import Base, engine
-
-from models import owner_models, user_models, room_models, booking_models
+from models import Owner, Customer, Room, Booking # Ensures models are in metadata
 
 from fastapi.responses import JSONResponse
 import traceback
@@ -132,8 +131,8 @@ def init_db():
         return {"error": str(e), "traceback": traceback.format_exc()}
 
 # Routers inclusion
-app.include_router(owner.router, tags=["Owner"])
-app.include_router(user.router, tags=["User"])
-app.include_router(room.router, tags=["Rooms"])
-app.include_router(Booking.router, tags=["Booking"])
-app.include_router(user_dashboard.router, tags=["User Dashboard"])
+app.include_router(owner_router.router, tags=["Owner"])
+app.include_router(user_router.router, tags=["User"])
+app.include_router(room_router.router, tags=["Rooms"])
+app.include_router(booking_router.router, tags=["Booking"])
+app.include_router(user_dashboard_router.router, tags=["User Dashboard"])
