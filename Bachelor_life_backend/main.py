@@ -32,7 +32,20 @@ except Exception as e:
 # Health Check Diagnostic
 @app.get("/ping")
 def ping():
-    return {"status": "online", "message": "Backend is active!"}
+    db_status = "Unknown"
+    try:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+            db_status = "Connected"
+    except Exception as e:
+        db_status = f"Disconnected: {str(e)}"
+
+    return {
+        "status": "online", 
+        "db_status": db_status,
+        "base_dir": BASE_DIR
+    }
 
 # Static files handled by Vercel directly or skip folder creation for read-only environment
 # app.mount("/static", StaticFiles(directory="static"), name="static")
