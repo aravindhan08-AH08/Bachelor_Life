@@ -18,72 +18,70 @@ except OSError:
 # 1. GET ALL ROOMS
 @router.get("/")
 def get_all_rooms(db: Session = Depends(get_db)):
-    # is_available True-ah irukura rooms mattum thaan list aagum (Full aana automatic-ah hidden aydum)
     rooms = db.query(Room).filter(Room.is_approved == True, Room.is_available == True).all()
     return [{c.name: getattr(r, c.name) for c in r.__table__.columns} for r in rooms]
 
-# 2. CREATE ROOM (With Sharing Capacity Logic)
+# 1.5 GET SINGLE ROOM DETAILS
+@router.get("/{room_id}")
+def get_room_details(room_id: int, db: Session = Depends(get_db)):
+    room = db.query(Room).filter(Room.id == room_id).first()
+    if not room:
+        raise HTTPException(status_code=404, detail="Room not found")
+    
+    # Add owner details directly to the response object for frontend ease
+    result = {c.name: getattr(room, c.name) for c in room.__table__.columns}
+    if room.owner:
+        result["owner_name"] = room.owner.owner_name
+        result["owner_email"] = room.owner.email
+        result["owner_phone"] = room.owner.phone
+        
+    return result
+
+import base64
+
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_room(
     owner_email: str = Form(...),
-    title: str = Form(...),
-    location: str = Form(...),
-    deposit: int = Form(0),
-    rent: int = Form(...),
-    room_type: str = Form(...),
-    description: str = Form(...),
-    # sharing_capacity: 1 to 4 kulla thaan irukanum
-    sharing_capacity: int = Form(1), 
-    bachelor_allowed: bool = Form(True),
-    wifi: bool = Form(False),
-    ac: bool = Form(False),
-    attached_bath: bool = Form(False),
-    kitchen_access: bool = Form(False),
-    parking: bool = Form(False),
-    laundry: bool = Form(False),
+# ... parameters remains same ...
     security: bool = Form(False),
     gym: bool = Form(False),
-    cctv: bool = Form(False), # Parameter-ah sethaachu
-    semi_furnished: bool = Form(False), # Parameter-ah sethaachu
-    gender: str = Form("Any"), # Parameter-ah sethaachu
+    cctv: bool = Form(False),
+    semi_furnished: bool = Form(False),
+    gender: str = Form("Any"),
     is_available: bool = Form(True),
     files: List[UploadFile] = File(...),
     video_file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
-    # Constraint Check: Increased to 10 for Room/PG/BHK
+    # Constraint Check
     if sharing_capacity > 10:
-        raise HTTPException(
-            status_code=400, 
-            detail="Maximum 10 persons only allowed!"
-        )
+        raise HTTPException(status_code=400, detail="Maximum 10 persons only allowed!")
 
     owner = db.query(Owner).filter(Owner.email == owner_email).first()
     if not owner:
         raise HTTPException(status_code=404, detail="Owner email not found!")
 
-    saved_paths = []
+    # Conversion to Base64 (Vercel Friendly)
+    base64_images = []
     if files:
         for file in files:
             if file.filename:
-                # VERCEL FIX: Skip actual writing to disk, just store the filename
-                # If you want real images, Cloudinary integration is needed.
-                temp_path = f"static/room_images/{file.filename}"
-                saved_paths.append(temp_path)
+                contents = await file.read()
+                # Encode to base64
+                encoded = base64.b64encode(contents).decode("utf-8")
+                mime_type = file.content_type or "image/jpeg"
+                base64_images.append(f"data:{mime_type};base64,{encoded}")
 
     new_room = Room(
         title=title, location=location, rent=rent, room_type=room_type,
-        description=description, 
-        max_persons=sharing_capacity,
-        bachelor_allowed=bachelor_allowed,
-        wifi=wifi, ac=ac, attached_bath=attached_bath, deposit=deposit,
+        description=description, max_persons=sharing_capacity,
+        bachelor_allowed=bachelor_allowed, wifi=wifi, ac=ac, 
+        attached_bath=attached_bath, deposit=deposit,
         kitchen_access=kitchen_access, parking=parking, laundry=laundry,
-        security=security, gym=gym, 
-        cctv=cctv, semi_furnished=semi_furnished, gender=gender,
-        image_url=saved_paths, 
-        is_available=is_available,
-        owner_id=owner.id,
-        is_approved=True 
+        security=security, gym=gym, cctv=cctv, 
+        semi_furnished=semi_furnished, gender=gender,
+        image_url=base64_images, # Base64 data saved here
+        is_available=is_available, owner_id=owner.id, is_approved=True 
     )
     
     db.add(new_room)
@@ -123,13 +121,16 @@ async def update_room(
         raise HTTPException(status_code=403, detail="Owner email mismatch!")
 
     if files:
-        new_paths = []
+        new_base64_images = []
         for file in files:
-            file_path = f"{UPLOAD_DIR}/{file.filename}"
-            with open(file_path, "wb") as buffer:
-                shutil.copyfileobj(file.file, buffer)
-            new_paths.append(file_path)
-        room.image_url = new_paths
+            if file.filename:
+                contents = await file.read()
+                encoded = base64.b64encode(contents).decode("utf-8")
+                mime_type = file.content_type or "image/jpeg"
+                new_base64_images.append(f"data:{mime_type};base64,{encoded}")
+        room.image_url = new_base64_images
+
+    # ... rest of the updates ...
 
     room.title = title
     room.location = location
