@@ -4,59 +4,67 @@ from core.config import DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DB_PORT, DATABASE
 import os
 import urllib.parse
 
-# Priority: Use DATABASE_URL (standard for Vercel/Neon)
+# Priority: Use DATABASE_URL (standard for Vercel/Neon/Supabase)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
-    # 1. Remove query params (like pgbouncer)
-    if "?" in DATABASE_URL:
-        DATABASE_URL = DATABASE_URL.split("?", 1)[0]
-
-    # 2. Fix protocol
+    # 1. Fix protocol first (must be postgresql+psycopg2 for SQLAlchemy)
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
     elif "postgresql://" in DATABASE_URL and "+psycopg2" not in DATABASE_URL:
         DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
 
-    # 3. Handle '@' in password (Robust rsplit)
+    # 2. Handle '@' in password Safely
+    # We want to encode the password but keep the rest (host, port, db, params)
     try:
-        # Format: protocol://user:pass@host:port/db
-        prefix, rest = DATABASE_URL.split("://", 1)
+        # Split into main part and query part
+        if "?" in DATABASE_URL:
+            main_part, query_part = DATABASE_URL.split("?", 1)
+        else:
+            main_part, query_part = DATABASE_URL, ""
+
+        # Parse prefix and rest
+        prefix, rest = main_part.split("://", 1)
         if "@" in rest:
-            creds, destination = rest.rsplit("@", 1) # Split ONLY at the last '@'
+            creds, destination = rest.rsplit("@", 1)
             if ":" in creds:
                 user, password = creds.split(":", 1)
                 # Re-encode password safely
                 encoded_password = urllib.parse.quote_plus(password)
-                DATABASE_URL = f"{prefix}://{user}:{encoded_password}@{destination}"
+                main_part = f"{prefix}://{user}:{encoded_password}@{destination}"
+            
+        # Reconstruct URL
+        if query_part:
+            DATABASE_URL = f"{main_part}?{query_part}"
+            if "sslmode" not in query_part:
+                DATABASE_URL += "&sslmode=require"
+        else:
+            DATABASE_URL = main_part + "?sslmode=require"
+
     except Exception as e:
         print(f"URL Parsing Error: {e}")
-
-    # 4. Add SSL
-    if "sslmode" not in DATABASE_URL:
-        DATABASE_URL += "?sslmode=require"
 else:
-    # Build from components
+    # Build from components (Local Setup)
     if all([DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DATABASE]):
         encoded_password = urllib.parse.quote_plus(str(DB_PASSWORD))
         port = DB_PORT or "5432"
         DATABASE_URL = f"postgresql+psycopg2://{DB_USERNAME}:{encoded_password}@{DB_HOSTNAME}:{port}/{DATABASE}"
         
-        # Add SSL mode if it's not local
         if DB_HOSTNAME != "localhost" and "127.0.0.1" not in DB_HOSTNAME:
-             if "?" not in DATABASE_URL:
-                 DATABASE_URL += "?sslmode=require"
-             else:
-                 DATABASE_URL += "&sslmode=require"
+            DATABASE_URL += "?sslmode=require"
 
 if not DATABASE_URL:
-    # Local fallback
+    # Fallback
     if os.getenv("VERCEL"):
-         DATABASE_URL = "sqlite://" # In-memory fallback
+         DATABASE_URL = "sqlite://"
     else:
          DATABASE_URL = "sqlite:///./test.db"
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL, 
+    pool_pre_ping=True,  # Database connection-ah constant-ah check pannum
+    pool_recycle=300     # Connectoins refresh pannum (Vercel-ukku best)
+)
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 
