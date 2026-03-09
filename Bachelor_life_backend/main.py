@@ -6,15 +6,31 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
 # Force Redeploy - Timestamp: March 09, 2026 - 14:55 (Fixing Connection)
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
 from routers import room, Booking, user, owner, user_dashboard
 from db.database import Base, engine
 
 from models import owner_models, user_models, room_models, booking_models
 
+from fastapi.responses import JSONResponse
+import traceback
+
 app = FastAPI(title="Welcome to BachelorLife Backend")
+
+# Global Exception Handler for Debugging (Important for Vercel 500 errors)
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "error_type": type(exc).__name__,
+            "error_detail": str(exc),
+            "traceback": traceback.format_exc()
+        }
+    )
 
 # Enable CORS for all origins (Important for Vercel/Same-Origin issues)
 app.add_middleware(
@@ -25,10 +41,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Database Tables Creation (Ensure models are imported before this)
 try:
+    print("DEBUG: Attempting to create tables...")
     Base.metadata.create_all(bind=engine)
+    print("DEBUG: Tables created successfully.")
 except Exception as e:
     print(f"Database creation failed: {e}")
+    # Don't crash here, but diagnostics reflect on /ping
 
 # Health Check Diagnostic
 # Version: 1.0.3 - Detailed Diagnostics
@@ -59,10 +79,19 @@ def ping():
             db_user = "Parsing-Error"
 
     try:
-        from sqlalchemy import text
+        from sqlalchemy import text, inspect
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
             db_status = "Connected"
+            
+            # Show tables for debugging
+            inspector = inspect(engine)
+            tables = inspector.get_table_names()
+            if tables:
+                db_status += f" (Tables: {', '.join(tables)})"
+            else:
+                db_status += " (No tables found!)"
+
     except Exception as e:
         error_detail = str(e)
         if "password authentication failed" in error_detail:
