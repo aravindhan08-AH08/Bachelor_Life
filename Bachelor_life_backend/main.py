@@ -5,7 +5,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
-# Force Redeploy - Timestamp: March 09, 2026 - 19:15 (Final Signup Fix)
+# Force Redeploy - Timestamp: March 09, 2026 - 19:30 (Password Limit Fix)
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
