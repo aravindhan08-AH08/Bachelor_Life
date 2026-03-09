@@ -59,28 +59,43 @@ async function renderDashboard() {
         const card = document.createElement("div");
         card.classList.add("listing-card");
         let imgSrc = "https://placehold.co/340x200?text=No+Image";
-        let images = room.image_url;
-        if (typeof images === "string") {
-          try {
-            if (images.startsWith("[") && images.endsWith("]")) {
-              images = JSON.parse(images);
-            } else if (images !== "") {
-              images = [images];
+        // Robust parsing for image_url (handles arrays, JSON strings, Python strings)
+        let images = [];
+        try {
+          const rawImages = room.image_url;
+          if (Array.isArray(rawImages)) {
+            images = rawImages;
+          } else if (typeof rawImages === 'string' && rawImages.trim() !== '') {
+            let str = rawImages.trim();
+            if (str.startsWith('[') && str.endsWith(']')) {
+              try {
+                images = JSON.parse(str);
+              } catch (e) {
+                // Fallback for single quotes (Python style)
+                try {
+                  images = JSON.parse(str.replace(/'/g, '"'));
+                } catch (e2) {
+                  try {
+                    const content = str.substring(1, str.length - 1);
+                    images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+                  } catch (e3) { images = [str]; }
+                }
+              }
             } else {
-              images = [];
+              images = [str];
             }
-          } catch (e) {
-            images = images !== "" ? [images] : [];
           }
+        } catch (err) {
+          images = [];
         }
 
-        if (images && Array.isArray(images) && images.length > 0) {
+        if (images.length > 0) {
           const rawPath = images[0];
-          if (rawPath.startsWith("data:")) {
+          if (rawPath.toString().startsWith("data:")) {
             imgSrc = rawPath;
           } else {
-            const cleanPath = rawPath.replace(/\\/g, "/").replace(/^\/+/, "");
-            imgSrc = `${apiBase}/${cleanPath}`;
+            const cleanPath = rawPath.toString().replace(/\\/g, "/").replace(/^\/+/, "");
+            imgSrc = cleanPath.startsWith('http') ? cleanPath : `${apiBase}/${cleanPath}`;
           }
         }
 

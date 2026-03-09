@@ -147,8 +147,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         if (Array.isArray(images)) {
           images.forEach((path) => {
+            if (!path) return;
             const img = document.createElement("img");
-            img.src = `${apiBase}/${path.replace(/\\/g, "/")}`;
+            const pathStr = path.toString().trim();
+            if (pathStr.startsWith("data:")) {
+              img.src = pathStr;
+            } else {
+              const cleanP = pathStr.replace(/\\/g, "/").replace(/^\/+/, "");
+              img.src = cleanP.startsWith('http') ? cleanP : `${apiBase}/${cleanP}`;
+            }
             img.className = "preview-img";
             imagePreviewContainer.appendChild(img);
           });
