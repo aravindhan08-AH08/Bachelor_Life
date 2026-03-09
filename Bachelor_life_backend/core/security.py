@@ -16,10 +16,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    # Truncate to match hashing logic
+    safe_password = plain_password[:71] if len(plain_password) > 72 else plain_password
+    return pwd_context.verify(safe_password, hashed_password)
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    # Bcrypt supports max 72 characters. We truncate to ensure stability.
+    safe_password = password[:71] if len(password) > 72 else password
+    return pwd_context.hash(safe_password)
 
 def create_access_token(data: dict):
     to_encode = data.copy()
