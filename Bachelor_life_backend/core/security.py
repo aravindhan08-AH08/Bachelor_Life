@@ -15,15 +15,17 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
+import hashlib
+
 def verify_password(plain_password, hashed_password):
-    # Truncate to 60 chars to avoid bcrypt's 72-byte limit (SAFE)
-    safe_password = plain_password[:60]
-    return pwd_context.verify(safe_password, hashed_password)
+    # Pre-hash to 64-char hex to avoid bcrypt 72-byte limit
+    pre_hashed = hashlib.sha256(plain_password.encode()).hexdigest()
+    return pwd_context.verify(pre_hashed, hashed_password)
 
 def get_password_hash(password):
-    # Truncate to 60 chars to avoid bcrypt's 72-byte limit (SAFE)
-    safe_password = password[:60]
-    return pwd_context.hash(safe_password)
+    # Pre-hash to 64-char hex to avoid bcrypt 72-byte limit
+    pre_hashed = hashlib.sha256(password.encode()).hexdigest()
+    return pwd_context.hash(pre_hashed)
 
 def create_access_token(data: dict):
     to_encode = data.copy()
