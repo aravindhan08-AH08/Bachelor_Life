@@ -60,6 +60,12 @@ try:
         try:
             conn.execute(text("ALTER TABLE customers ADD COLUMN IF NOT EXISTS gender VARCHAR;"))
             conn.execute(text("ALTER TABLE owners ADD COLUMN IF NOT EXISTS gender VARCHAR;"))
+            
+            # Rooms Table Updates
+            conn.execute(text("ALTER TABLE rooms ADD COLUMN IF NOT EXISTS gender VARCHAR DEFAULT 'Any';"))
+            conn.execute(text("ALTER TABLE rooms ADD COLUMN IF NOT EXISTS cctv BOOLEAN DEFAULT FALSE;"))
+            conn.execute(text("ALTER TABLE rooms ADD COLUMN IF NOT EXISTS semi_furnished BOOLEAN DEFAULT FALSE;"))
+            
             conn.commit()
             print("DEBUG: Auto-migration success (gender column ensured).")
         except Exception as migration_error:

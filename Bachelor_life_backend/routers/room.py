@@ -47,34 +47,47 @@ async def create_room(
     files: List[UploadFile] = File(...),
     db: Session = Depends(get_db)
 ):
-    # Constraint Check: Max 4 persons only
-    if sharing_capacity > 4:
+    # Constraint Check: Increased to 10 for Room/PG/BHK
+    if sharing_capacity > 10:
         raise HTTPException(
             status_code=400, 
-            detail="Maximum 4 persons only allowed for sharing rooms!"
+            detail="Maximum 10 persons only allowed!"
         )
 
     owner = db.query(Owner).filter(Owner.email == owner_email).first()
     if not owner:
         raise HTTPException(status_code=404, detail="Owner email not found!")
 
+    # Missing fields from Form
+    gender: str = Form("Any"),
+    cctv: bool = Form(False),
+    semi_furnished: bool = Form(False),
+
     saved_paths = []
     if files:
         for file in files:
             if file.filename:
-                file_path = f"{UPLOAD_DIR}/{file.filename}"
-                with open(file_path, "wb") as buffer:
-                    shutil.copyfileobj(file.file, buffer)
-                saved_paths.append(file_path)
+                try:
+                    # Ensure path exists, skip if read-only
+                    os.makedirs(UPLOAD_DIR, exist_ok=True)
+                    file_path = f"{UPLOAD_DIR}/{file.filename}"
+                    with open(file_path, "wb") as buffer:
+                        shutil.copyfileobj(file.file, buffer)
+                    saved_paths.append(file_path)
+                except Exception as e:
+                    print(f"File Save Error (Vercel): {e}")
+                    # Optionally, store filename only if save fails
+                    saved_paths.append(f"temp_{file.filename}")
 
     new_room = Room(
         title=title, location=location, rent=rent, room_type=room_type,
         description=description, 
-        max_persons=sharing_capacity, # Inga capacity-ah save panrom
+        max_persons=sharing_capacity,
         bachelor_allowed=bachelor_allowed,
         wifi=wifi, ac=ac, attached_bath=attached_bath, deposit=deposit,
         kitchen_access=kitchen_access, parking=parking, laundry=laundry,
         security=security, gym=gym, 
+        cctv=cctv, semi_furnished=semi_furnished, gender=gender,
         image_url=saved_paths, 
         is_available=is_available,
         owner_id=owner.id,

@@ -27,6 +27,9 @@ class Room(Base):
     laundry = Column(Boolean, default=False)
     security = Column(Boolean, default=False)
     gym = Column(Boolean, default=False)
+    cctv = Column(Boolean, default=False)
+    semi_furnished = Column(Boolean, default=False)
+    gender = Column(String, default="Any")
     image_url = Column(JSON, nullable=True)
 
     owner = relationship("Owner", back_populates="rooms")
