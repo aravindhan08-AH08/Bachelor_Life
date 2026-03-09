@@ -5,7 +5,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
-# Force Redeploy - Timestamp: March 09, 2026 - 14:55 (Fixing Connection)
+# Force Redeploy - Timestamp: March 09, 2026 - 19:15 (Final Signup Fix)
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -31,13 +31,11 @@ async def global_exception_handler(request: Request, exc: Exception):
     if isinstance(exc, (StarletteHTTPException, HTTPException, RequestValidationError)):
         return await http_exception_handler(request, exc)
     
-    # Generic Server Crash Details (Like DB Connection loss)
+    # Generic Server Crash Details (Like DB Connection loss or missing columns)
     return JSONResponse(
         status_code=500,
         content={
-            "error_type": type(exc).__name__,
-            "error_detail": str(exc),
-            "traceback": "Internal Server Error. Please check logs."
+            "detail": f"Database/System Error: {type(exc).__name__} - {str(exc)}"
         }
     )
 
