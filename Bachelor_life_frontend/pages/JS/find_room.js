@@ -176,11 +176,15 @@ function renderRooms(roomsToRender) {
 
     if (images && Array.isArray(images) && images.length > 0) {
       const rawPath = images[0];
-      const cleanPath = rawPath.replace(/\\/g, "/").replace(/^\/+/, "");
-      const apiBase = window.API_CONFIG
-        ? window.API_CONFIG.BASE_URL
-        : "http://127.0.0.1:8000";
-      imgSrc = `${apiBase}/${cleanPath}`;
+      if (rawPath.startsWith("data:")) {
+        imgSrc = rawPath;
+      } else {
+        const cleanPath = rawPath.replace(/\\/g, "/").replace(/^\/+/, "");
+        const apiBase = window.API_CONFIG
+          ? window.API_CONFIG.BASE_URL
+          : "http://127.0.0.1:8000";
+        imgSrc = `${apiBase}/${cleanPath}`;
+      }
     }
 
     const card = document.createElement("div");

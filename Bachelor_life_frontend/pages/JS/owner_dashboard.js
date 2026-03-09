@@ -76,8 +76,12 @@ async function renderDashboard() {
 
         if (images && Array.isArray(images) && images.length > 0) {
           const rawPath = images[0];
-          const cleanPath = rawPath.replace(/\\/g, "/").replace(/^\/+/, "");
-          imgSrc = `${apiBase}/${cleanPath}`;
+          if (rawPath.startsWith("data:")) {
+            imgSrc = rawPath;
+          } else {
+            const cleanPath = rawPath.replace(/\\/g, "/").replace(/^\/+/, "");
+            imgSrc = `${apiBase}/${cleanPath}`;
+          }
         }
 
         card.innerHTML = `

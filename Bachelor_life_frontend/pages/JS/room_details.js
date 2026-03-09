@@ -169,6 +169,8 @@ function renderRoomDetails(room) {
       : "http://127.0.0.1:8000";
     const getCleanPath = (path) => {
       if (!path) return "";
+      // If it's a base64 from current logic
+      if (path.toString().startsWith("data:")) return path;
       const p = path.toString().replace(/\\/g, "/").replace(/^\/+/, "");
       return `${apiBase}/${p}`;
     };
