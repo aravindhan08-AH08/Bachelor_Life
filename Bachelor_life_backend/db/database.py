@@ -8,11 +8,21 @@ import urllib.parse
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:
+    # Remove problematic query parameters like pgbouncer
+    if "?" in DATABASE_URL:
+        base_url, query = DATABASE_URL.split("?", 1)
+        # We keep the base URL, but we need to be careful with SSL
+        DATABASE_URL = base_url
+
     # SQLAlchemy requires "postgresql://" not "postgres://"
     if DATABASE_URL.startswith("postgres://"):
         DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
     elif "postgresql://" in DATABASE_URL and "+psycopg2" not in DATABASE_URL:
         DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
+    
+    # Re-add SSL if not present (since we stripped params)
+    if "sslmode" not in DATABASE_URL:
+        DATABASE_URL += "?sslmode=require"
 else:
     # Build from components
     if all([DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DATABASE]):
