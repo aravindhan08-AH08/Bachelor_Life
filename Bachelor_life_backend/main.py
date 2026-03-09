@@ -5,8 +5,8 @@ import sys
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(BASE_DIR)
 
-# Force Redeploy - Timestamp: March 09, 2026 - 19:40 (Fix: SHA256-V2)
-# Version: 1.0.6 - Critical Security Fix
+# Force Redeploy - Timestamp: March 09, 2026 - 19:40 (Fix: PBKDF2 FINAL)
+# Version: 1.0.7 - PBKDF2 Enabled
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -121,7 +121,7 @@ def ping():
             db_status = f"Disconnected: {error_detail[:150]}"
 
     return {
-        "version": "1.0.6",
+        "version": "1.0.7",
         "status": "online", 
         "db_status": db_status,
         "env_check": f"DATABASE_URL detected: {env_detected}",

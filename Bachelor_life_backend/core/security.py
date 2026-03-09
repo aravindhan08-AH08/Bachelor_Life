@@ -13,22 +13,15 @@ SECRET_KEY = "bachelor_life_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Version: 1.0.5 (SHA-256 Pre-Hashing)
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Switch to PBKDF2-SHA256 to avoid ANY password length limits
+pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def verify_password(plain_password, hashed_password):
-    # Pre-hash to ensure fixed 64-character input to bcrypt
-    # This prevents the 'password cannot be longer than 72 bytes' error.
-    hash_obj = hashlib.sha256(plain_password.encode())
-    pre_hashed = hash_obj.hexdigest()
-    return pwd_context.verify(pre_hashed, hashed_password)
+    return pwd_context.verify(plain_password, hashed_password)
 
 def get_password_hash(password):
-    # Pre-hash to ensure fixed 64-character input to bcrypt
-    hash_obj = hashlib.sha256(password.encode())
-    pre_hashed = hash_obj.hexdigest()
-    return pwd_context.hash(pre_hashed)
+    return pwd_context.hash(password)
 
 def create_access_token(data: dict):
     to_encode = data.copy()
