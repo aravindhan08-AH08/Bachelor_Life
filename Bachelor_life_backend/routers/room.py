@@ -10,7 +10,10 @@ import os
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
 
 UPLOAD_DIR = "static/room_images"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except OSError:
+    print(f"Directory {UPLOAD_DIR} could not be created (read-only filesystem)")
 
 # 1. GET ALL ROOMS
 @router.get("/")

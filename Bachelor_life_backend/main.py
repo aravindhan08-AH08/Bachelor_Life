@@ -8,12 +8,16 @@ from models import owner_models, user_models, room_models, booking_models
 
 app = FastAPI(title="Welcome to BachelorLife Backend")
 
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"Database creation failed: {e}")
 
-if not os.path.exists("static/images"):
-    os.makedirs("static/images")
-
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Static files handled by Vercel directly or skip folder creation for read-only environment
+# app.mount("/static", StaticFiles(directory="static"), name="static")
+# If you still want to mount it, make sure the directory is already in your git repo.
+if os.path.exists("static"):
+    app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def home():
