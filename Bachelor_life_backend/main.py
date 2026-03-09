@@ -19,27 +19,27 @@ import traceback
 
 app = FastAPI(title="Welcome to BachelorLife Backend")
 
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from fastapi.exception_handlers import http_exception_handler
 
 # Global Exception Handler (Only for UNHANDLED server crashes)
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
-    # Let FastAPI handle validation and defined HTTP errors normally
+    # If it's a known FastAPI error (like 400, 404, 422), let FastAPI handle it
     if isinstance(exc, (StarletteHTTPException, HTTPException, RequestValidationError)):
         return await http_exception_handler(request, exc)
     
-    # Generic Server Crash Details
+    # Generic Server Crash Details (Like DB Connection loss)
     return JSONResponse(
         status_code=500,
         content={
             "error_type": type(exc).__name__,
             "error_detail": str(exc),
-            "traceback": traceback.format_exc() if os.getenv("VERCEL") else "Check logs"
+            "traceback": "Internal Server Error. Please check logs."
         }
     )
-
-from fastapi.exception_handlers import http_exception_handler
 
 # Enable CORS for all origins (Important for Vercel/Same-Origin issues)
 app.add_middleware(
