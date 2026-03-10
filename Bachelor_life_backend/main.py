@@ -180,15 +180,17 @@ def fix_images_endpoint():
         fixed_count = 0
         logs = []
 
+        # High-quality default Base64 image
+        DEFAULT_B64 = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgHBgkIBwgKCgkLDRYPDQwMDRsUFRAWIB0iIiAdHx8kKDQsJCYxJx8fLT0tMTU3Ojo6Iys/RD84QzQ5OjcBCgoKDQwNGg8PGjclHyU3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3N//AABEIAGQAZAMBEAACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAABAgMEBQEGB//EADcQAAIBAwIDBQYEBgMAAAAAAAECEQADEiEEMUEFIlFhchNxgZGxwTJBobIUQmKy0vBCU+H/egvBRRRWaKKKKpSiiitBRRRQ2CiitMV9h7K4Sxc+BeI7D1mvsfZnCuLDxf1mufp1fK8mKFeRXURRRRWkUUUVpYUUUVpYUUUVpYUUZ9l+S6v+y6zV+Zfkv7LtZqfMvyZ9l+S+07Waryfkt6X5KbRarzL8mdYq0WiqfMLkdZqpzC5HWfkv7LVTiFyO7Sqq8SuV2pVeIXI7OqvELkd86vELkd86vELkd361eIXK79avELkd86vELkd86vELkd361eIXI7v1q8QuV3fOfGr8/2XKv055WfH51fkXKs8Hznxq/P9lyqfC759KvP9lyp+G3z6Veff7Llc4TfOfSr8P2XK7wm+Z6Vf6/ZcrnC75nPSrfv9lyucLvmevCre/2XKrhd8m69atev2XKrhd8m69atWv2XKvh98m69arVq9lyr4XfPp1q1ar2XKvhd+Z6datWq9lyr4XfPp1q1er2XKvhd+Z6datWr2XKvhfOenWrVa9ZsqvhN8z0q1etXU2Sq+E3zPSrVq9dLZKp4PfMdN6tWr10llqpg98x03PXVq1evoLJVPB75jpueuvz79lyv/2Q=="
+
         for room in rooms:
             raw = room.image_url
             if not raw: 
-                logs.append(f"Room {room.id}: No image_url found.")
+                logs.append(f"Room {room.id}: Empty")
                 continue
             
-            # 1. Normalize into a proper Python list
-            images = []
             orig_type = str(type(raw))
+            images = []
             if isinstance(raw, list):
                 images = raw
             elif isinstance(raw, str):
@@ -197,23 +199,25 @@ def fix_images_endpoint():
                     try:
                         images = json.loads(raw.replace("'", '"'))
                     except:
-                        # Fallback manual parse
                         content = raw[1:-1]
                         images = [item.strip().strip('"').strip("'") for item in content.split(",")]
                 else:
                     images = [raw]
             
-            # Clean up the list
+            # Clean up formatting
             images = [str(img).strip().replace('\\"', '"').replace('\"', '"').strip('"').strip("'") for img in images if img]
 
-            if not isinstance(images, list):
-                images = [str(images)]
+            # Vercel Migration: Replace local paths with Default Base64
+            if images and len(images) > 0:
+                s0 = images[0]
+                if s0.startswith("static/") or s0.startswith("/static/"):
+                    logs.append(f"Room {room.id} ({room.title}) had local path. Replaced with fallback Base64.")
+                    images = [DEFAULT_B64]
 
-            # 2. Update the record
+            # Save as proper list
             room.image_url = images
             fixed_count += 1
-            sample = str(images[0])[:50] if images else "Empty"
-            logs.append(f"Room {room.id} ({room.title}): Type {orig_type} fixed to list. Start: {sample}...")
+            logs.append(f"Room {room.id} fixed. Start: {str(images[0])[:30]}...")
         
         db.commit()
         db.close()
