@@ -64,14 +64,26 @@ document.addEventListener("DOMContentLoaded", async () => {
           const statusRes = await fetch(`${apiBase}/booking/check-status/${roomId}?user_id=${userData.id}`);
           if (statusRes.ok) {
             const statusData = await statusRes.json();
-            // Match new backend status labels
+            // Match user label preferences and add alert click
             if (statusData.status === "Requested" || statusData.status === "Approved") {
               const btn = document.getElementById("book-now-btn");
               if (btn) {
-                btn.textContent = statusData.status === "Approved" ? "Approved" : "Request Sent";
-                btn.disabled = true;
-                btn.style.backgroundColor = "#ccc";
-                btn.style.cursor = "not-allowed";
+                // Change text: requested/approved
+                btn.textContent = statusData.status === "Approved" ? "Approved" : "Requested";
+
+                // Clicking shows alert, no longer disabled
+                btn.disabled = false;
+                btn.style.backgroundColor = statusData.status === "Approved" ? "green" : "orange";
+                btn.style.color = "white";
+                btn.style.cursor = "pointer";
+
+                // Remove the old listener by cloning
+                const newBtn = btn.cloneNode(true);
+                btn.parentNode.replaceChild(newBtn, btn);
+
+                newBtn.addEventListener("click", () => {
+                  alert(`Your booking status for this room is: ${statusData.status}`);
+                });
               }
             }
           }
