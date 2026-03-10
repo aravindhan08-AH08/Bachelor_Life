@@ -60,22 +60,31 @@ function renderBookings(bookings) {
 
   if (totalRequests) totalRequests.textContent = bookings.length;
 
-  const requestedCount = bookings.filter((b) => b.status === "Requested" || b.status === "Pending").length;
+  const requestedCount = bookings.filter((b) => {
+    const s = (b.status || "").toLowerCase();
+    return s === "requested" || s === "pending";
+  }).length;
   if (pendingRequests) {
     pendingRequests.textContent = requestedCount;
-    if (requestedCount > 0) console.log("DEBUG: Updated Requested Count:", requestedCount);
+    console.log("DEBUG: Updated Requested Count:", requestedCount);
   }
 
-  const approvedCount = bookings.filter((b) => b.status === "Approved" || b.status === "Confirmed").length;
+  const approvedCount = bookings.filter((b) => {
+    const s = (b.status || "").toLowerCase();
+    return s === "approved" || s === "confirmed";
+  }).length;
   if (confirmedRequests) {
     confirmedRequests.textContent = approvedCount;
-    if (approvedCount > 0) console.log("DEBUG: Updated Approved Count:", approvedCount);
+    console.log("DEBUG: Updated Approved Count:", approvedCount);
   }
 
-  const rejectedCount = bookings.filter((b) => b.status === "Rejected").length;
+  const rejectedCount = bookings.filter((b) => {
+    const s = (b.status || "").toLowerCase();
+    return s === "rejected";
+  }).length;
   if (rejectedRequests) {
     rejectedRequests.textContent = rejectedCount;
-    if (rejectedCount > 0) console.log("DEBUG: Updated Rejected Count:", rejectedCount);
+    console.log("DEBUG: Updated Rejected Count:", rejectedCount);
   }
 
 

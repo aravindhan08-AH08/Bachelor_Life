@@ -160,32 +160,38 @@ function renderRooms(roomsToRender) {
 
   roomsToRender.forEach((room) => {
     let imgSrc = "https://placehold.co/340x200?text=No+Image";
-    // Robust parsing for image_url (handles arrays, JSON strings, Python strings)
+
+    // ULTRA-ROBUST Image URL Parsing
     let images = [];
     try {
-      const rawImages = room.image_url;
-      if (Array.isArray(rawImages)) {
-        images = rawImages;
-      } else if (typeof rawImages === 'string' && rawImages.trim() !== '') {
-        let str = rawImages.trim();
+      const raw = room.image_url;
+      if (Array.isArray(raw)) {
+        images = raw;
+      } else if (typeof raw === 'string' && raw.trim() !== '') {
+        let str = raw.trim();
         if (str.startsWith('[') && str.endsWith(']')) {
           try {
+            // Try standard JSON parse
             images = JSON.parse(str);
           } catch (e) {
             try {
+              // Try fixing small quotes
               images = JSON.parse(str.replace(/'/g, '"'));
             } catch (e2) {
-              try {
-                const content = str.substring(1, str.length - 1);
-                images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
-              } catch (e3) { images = [str]; }
+              // Manual split as last resort
+              const content = str.substring(1, str.length - 1);
+              images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
             }
           }
         } else {
           images = [str];
         }
+      } else if (raw && typeof raw === 'object') {
+        // If it's an object but not array, try to extract values
+        images = Object.values(raw);
       }
     } catch (err) {
+      console.error("Error parsing room images:", err);
       images = [];
     }
 

@@ -162,37 +162,37 @@ function renderRoomDetails(room) {
     const rawImages = room.image_url;
     console.log("DEBUG: rawImages from API:", rawImages);
 
+    // ULTRA-ROBUST Image URL Parsing
     let images = [];
     try {
-      if (Array.isArray(rawImages)) {
-        images = rawImages;
-      } else if (typeof rawImages === 'string' && rawImages.trim() !== '') {
-        let str = rawImages.trim();
+      const raw = room.image_url;
+      if (Array.isArray(raw)) {
+        images = raw;
+      } else if (typeof raw === 'string' && raw.trim() !== '') {
+        let str = raw.trim();
         if (str.startsWith('[') && str.endsWith(']')) {
           try {
-            // Attempt JSON parse
+            // Try standard JSON parse
             images = JSON.parse(str);
           } catch (e) {
             try {
-              // Try fixing single quotes (Python style) but be careful with Base64
-              // We only replace ' if it's followed by , or ] or preceded by [ or ,
-              let fixedStr = str.replace(/'/g, '"');
-              images = JSON.parse(fixedStr);
+              // Try fixing small quotes (Python style)
+              images = JSON.parse(str.replace(/'/g, '"'));
             } catch (e2) {
-              console.warn("Manual parsing fallback for images string");
+              // Manual split as last resort
               const content = str.substring(1, str.length - 1);
-              // Simple split by comma, then trim quotes. 
-              // NOTE: If Base64 has commas in data (rare but possible in some formats), 
-              // this might fail, but for standard data: URLs it works.
               images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
             }
           }
         } else {
           images = [str];
         }
+      } else if (raw && typeof raw === 'object') {
+        // If it's an object but not array, try to extract values
+        images = Object.values(raw);
       }
     } catch (err) {
-      console.error("Error parsing images:", err);
+      console.error("Error parsing room images:", err);
       images = [];
     }
 
