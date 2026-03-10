@@ -16,7 +16,7 @@
             "dest": "Bachelor_life_backend/static/$1"
         },
         {
-            "src": "/(user|owner|room|rooms|booking|ping|init-db|user-dashboard)(/.*)?",
+            "src": "/(user|owner|room|rooms|booking|ping|init-db|user-dashboard|fix-images)(/.*)?",
             "dest": "Bachelor_life_backend/main.py"
         },
         {
