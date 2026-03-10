@@ -19,14 +19,31 @@ def create_booking(data: BookingCreate, db: Session = Depends(get_db)):
     if not room.is_available:
         raise HTTPException(status_code=400, detail="This room is already filled or unavailable!")
 
-    # Check if user already has a booking for this room
+    # 1. Duplicate check (One user, One room)
     existing_booking = db.query(Booking).filter(
         Booking.room_id == data.room_id,
         Booking.user_id == data.user_id
     ).first()
     
     if existing_booking:
-        raise HTTPException(status_code=400, detail=f"You have already requested this room (Status: {existing_booking.status})")
+        raise HTTPException(
+            status_code=400, 
+            detail=f"You have already requested this room (Status: {existing_booking.status})"
+        )
+
+    # 2. Monthly Limit Check (Max 5 requests per month)
+    from datetime import datetime, timedelta
+    first_day_of_month = datetime.utcnow().replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    monthly_count = db.query(Booking).filter(
+        Booking.user_id == data.user_id,
+        Booking.created_at >= first_day_of_month
+    ).count()
+
+    if monthly_count >= 5:
+        raise HTTPException(
+            status_code=400, 
+            detail="You have reached your monthly limit of 5 booking requests."
+        )
 
     new_booking = Booking(
         room_id=data.room_id,
@@ -97,3 +114,21 @@ def approve_booking(
         "current_approved": approved_count,
         "room_limit": room.max_persons
     }
+
+# 3. CANCEL BOOKING (For Bachelors)
+@router.delete("/{booking_id}")
+def cancel_booking(booking_id: int, user_id: int, db: Session = Depends(get_db)):
+    booking = db.query(Booking).filter(
+        Booking.id == booking_id,
+        Booking.user_id == user_id
+    ).first()
+    
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking request not found.")
+    
+    if booking.status == "Approved":
+        raise HTTPException(status_code=400, detail="Cannot cancel an already approved booking.")
+
+    db.delete(booking)
+    db.commit()
+    return {"message": "Booking request cancelled successfully."}
