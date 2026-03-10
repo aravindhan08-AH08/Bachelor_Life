@@ -210,18 +210,9 @@ function renderRooms(roomsToRender) {
         if (pathStr.startsWith("data:")) return pathStr;
         if (pathStr.startsWith("http")) return pathStr;
 
-        // Remove any accidental folder prefixes if they exist in the path string
-        let cleanP = pathStr.replace(/\\/g, "/");
-        cleanP = cleanP.replace(/^Bachelor_life_backend\//, "")
-          .replace(/^Bachelor_life_frontend\//, "")
-          .replace(/^\/+/, "");
-
-        // Final absolute URL construction
-        // Use encodeURI to handle spaces in filenames like "Screenshot 2026..."
-        let finalUrl = `${apiBase}/${cleanP}`;
-        finalUrl = encodeURI(finalUrl);
-        console.log("DEBUG: Final Image URL (Find Room):", finalUrl);
-        return finalUrl;
+        // Final absolute URL construction for relative paths only
+        let finalUrl = `${apiBase}/${pathStr.replace(/\\/g, "/").replace(/^\/+/, "")}`;
+        return encodeURI(finalUrl);
       };
       imgSrc = getCleanPath(rawPath);
     }
