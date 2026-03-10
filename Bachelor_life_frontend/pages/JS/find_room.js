@@ -221,7 +221,7 @@ function renderRooms(roomsToRender) {
     card.classList.add("room-card");
     card.innerHTML = `
       <div class="image-box">
-        <img src="${imgSrc}" alt="${room.title}" class="room-img" onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Not+Found';">
+        <img src="${imgSrc}" alt="${room.title}" class="room-img" onerror="console.error('Image Load Error for ${room.title}:', this.src); this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Not+Found';">
       </div>
       <div class="room-info">
           <h3>${room.title}</h3>

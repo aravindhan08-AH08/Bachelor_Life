@@ -182,10 +182,13 @@ def fix_images_endpoint():
 
         for room in rooms:
             raw = room.image_url
-            if not raw: continue
+            if not raw: 
+                logs.append(f"Room {room.id}: No image_url found.")
+                continue
             
             # 1. Normalize into a proper Python list
             images = []
+            orig_type = str(type(raw))
             if isinstance(raw, list):
                 images = raw
             elif isinstance(raw, str):
@@ -200,14 +203,17 @@ def fix_images_endpoint():
                 else:
                     images = [raw]
             
-            # Ensure it's a list for SQLAlchemy JSON type
+            # Clean up the list
+            images = [str(img).strip().replace('\\"', '"').replace('\"', '"').strip('"').strip("'") for img in images if img]
+
             if not isinstance(images, list):
                 images = [str(images)]
 
             # 2. Update the record
             room.image_url = images
             fixed_count += 1
-            logs.append(f"Room {room.id} fixed.")
+            sample = str(images[0])[:50] if images else "Empty"
+            logs.append(f"Room {room.id} ({room.title}): Type {orig_type} fixed to list. Start: {sample}...")
         
         db.commit()
         db.close()
