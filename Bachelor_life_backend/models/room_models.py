@@ -31,6 +31,7 @@ class Room(Base):
     semi_furnished = Column(Boolean, default=False)
     gender = Column(String, default="Any")
     image_url = Column(JSON, nullable=True)
+    video_url = Column(String, nullable=True)
 
     owner = relationship("Owner", back_populates="rooms")
     bookings = relationship("Booking", back_populates="room")

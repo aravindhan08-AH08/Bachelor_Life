@@ -143,6 +143,7 @@ async def update_room(
     gender: str = Form("Any"),
     is_available: bool = Form(True),
     files: List[UploadFile] = File(None),
+    video_file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
     room = db.query(Room).filter(Room.id == room_id).first()
@@ -152,6 +153,9 @@ async def update_room(
     owner = db.query(Owner).filter(Owner.email == owner_email).first()
     if not owner or room.owner_id != owner.id:
         raise HTTPException(status_code=403, detail="Owner email mismatch!")
+
+    if video_file and video_file.filename:
+        room.video_url = f"static/room_videos/{video_file.filename}"
 
     if files:
         new_base64_images = []
