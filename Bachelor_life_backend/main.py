@@ -167,6 +167,62 @@ def init_db():
         return {"error": str(e), "traceback": traceback.format_exc()}
 
 # Routers inclusion
+@app.get("/fix-images")
+def fix_images_endpoint():
+    try:
+        from sqlalchemy.orm import Session
+        from db.database import SessionLocal
+        from models.room_models import Room
+        import json
+
+        db: Session = SessionLocal()
+        rooms = db.query(Room).all()
+        fixed_count = 0
+        logs = []
+
+        for room in rooms:
+            raw = room.image_url
+            if not raw: continue
+            
+            # 1. Normalize into a proper Python list
+            images = []
+            if isinstance(raw, list):
+                images = raw
+            elif isinstance(raw, str):
+                raw = raw.strip()
+                if raw.startswith("[") and raw.endswith("]"):
+                    try:
+                        images = json.loads(raw.replace("'", '"'))
+                    except:
+                        # Fallback manual parse
+                        content = raw[1:-1]
+                        images = [item.strip().strip('"').strip("'") for item in content.split(",")]
+                else:
+                    images = [raw]
+            
+            # Ensure it's a list for SQLAlchemy JSON type
+            if not isinstance(images, list):
+                images = [str(images)]
+
+            # 2. Update the record
+            room.image_url = images
+            fixed_count += 1
+            logs.append(f"Room {room.id} fixed.")
+        
+        db.commit()
+        db.close()
+        return {
+            "status": "success",
+            "message": f"Successfully fixed {fixed_count} rooms in the database.",
+            "details": logs
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "message": str(e),
+            "traceback": traceback.format_exc()
+        }
+
 app.include_router(owner_router.router, tags=["Owner"])
 app.include_router(user_router.router, tags=["User"])
 app.include_router(room_router.router, tags=["Rooms"])
