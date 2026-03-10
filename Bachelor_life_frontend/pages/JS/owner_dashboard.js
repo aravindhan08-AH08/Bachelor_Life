@@ -104,7 +104,9 @@ async function renderDashboard() {
             .replace(/^\/+/, "");
 
           // Final absolute URL construction
-          const finalUrl = `${apiBase}/${cleanP}`;
+          // Handle spaces with encodeURI
+          let finalUrl = `${apiBase}/${cleanP}`;
+          finalUrl = encodeURI(finalUrl);
           console.log("DEBUG: Final Image URL (Dashboard):", finalUrl);
           return finalUrl;
         };

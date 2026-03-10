@@ -1,5 +1,0 @@
-13:["static/room_images/Screenshot_2026-03-05_150026.png", "static/room_images/Screenshot_2026-03-05_150103.png", "static/room_images/Screenshot_2026-03-05_150116.png"]
-7:["static/room_images/pexels-digitalbuggu-374560.jpg", "static/room_images/Screenshot_2026-02-02_123623.png", "static/room_images/Product_pic.png", "static/room_images/ChatGPT_Image_Dec_11,_2025,_12_04_47_PM.png", "static/room_images/problem_sloving_Linkedin_post.png"]
-8:["static/room_images/ChatGPT_Image_Dec_11,_2025,_11_19_23_AM.png", "static/room_images/20251111_210354.jpg", "static/room_images/Screenshot_2025-11-07_113636.png", "static/room_images/Screenshot_2025-11-07_113647.png"]
-9:["static/room_images/pexels-digitalbuggu-374560.jpg", "static/room_images/Screenshot_2026-02-02_123623.png", "static/room_images/image_(4).png"]
-14:["static/room_images/Screenshot_2026-03-05_150026.png", "static/room_images/Screenshot_2026-03-05_150103.png", "static/room_images/Screenshot_2026-03-05_150116.png"]

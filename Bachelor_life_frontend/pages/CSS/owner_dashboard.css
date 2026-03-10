@@ -229,11 +229,13 @@ body {
   font-weight: 600;
 }
 
+.status-requested,
 .status-pending {
   background-color: #fff3cd;
   color: #856404;
 }
 
+.status-approved,
 .status-confirmed {
   background-color: #d4edda;
   color: #155724;

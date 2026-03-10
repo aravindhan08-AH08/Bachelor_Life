@@ -214,8 +214,9 @@ function renderRoomDetails(room) {
         .replace(/^\/+/, "");
 
       // Final absolute URL construction
-      const finalUrl = `${apiBase}/${cleanP}`;
-      console.log("DEBUG: Final Image URL (Room Details):", finalUrl);
+      let finalUrl = `${apiBase}/${cleanP}`;
+      finalUrl = encodeURI(finalUrl);
+      console.log("DEBUG: Final Image URL (Dashboard):", finalUrl);
       return finalUrl;
     };
 

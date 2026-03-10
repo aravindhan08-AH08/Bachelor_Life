@@ -209,8 +209,10 @@ function renderRooms(roomsToRender) {
           .replace(/^\/+/, "");
 
         // Final absolute URL construction
-        const finalUrl = `${apiBase}/${cleanP}`;
-        console.log("DEBUG: Final Image URL:", finalUrl);
+        // Use encodeURI to handle spaces in filenames like "Screenshot 2026..."
+        let finalUrl = `${apiBase}/${cleanP}`;
+        finalUrl = encodeURI(finalUrl);
+        console.log("DEBUG: Final Image URL (Find Room):", finalUrl);
         return finalUrl;
       };
       imgSrc = getCleanPath(rawPath);
