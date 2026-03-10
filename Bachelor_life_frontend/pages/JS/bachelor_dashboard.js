@@ -56,11 +56,11 @@ function renderBookings(bookings) {
   const confirmedRequests = document.getElementById("confirmedRequests");
 
   if (totalRequests) totalRequests.textContent = bookings.length;
-  const pendingCount = bookings.filter((b) => b.status === "Pending").length;
-  if (pendingRequests) pendingRequests.textContent = pendingCount;
+  const requestedCount = bookings.filter((b) => b.status === "Requested").length;
+  if (pendingRequests) pendingRequests.textContent = requestedCount;
   if (confirmedRequests)
     confirmedRequests.textContent = bookings.filter(
-      (b) => b.status === "Confirmed",
+      (b) => b.status === "Approved",
     ).length;
 
 

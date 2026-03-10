@@ -64,10 +64,11 @@ document.addEventListener("DOMContentLoaded", async () => {
           const statusRes = await fetch(`${apiBase}/booking/check-status/${roomId}?user_id=${userData.id}`);
           if (statusRes.ok) {
             const statusData = await statusRes.json();
-            if (statusData.status === "Pending" || statusData.status === "Confirmed") {
+            // Match new backend status labels
+            if (statusData.status === "Requested" || statusData.status === "Approved") {
               const btn = document.getElementById("book-now-btn");
               if (btn) {
-                btn.textContent = statusData.status === "Confirmed" ? "Booked" : "Request Sent";
+                btn.textContent = statusData.status === "Approved" ? "Approved" : "Request Sent";
                 btn.disabled = true;
                 btn.style.backgroundColor = "#ccc";
                 btn.style.cursor = "not-allowed";

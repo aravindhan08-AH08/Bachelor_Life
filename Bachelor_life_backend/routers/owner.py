@@ -125,15 +125,15 @@ def dashboard_approve_booking(booking_id: int, owner_email: str, db: Session = D
             detail="Permission denied! Room owner email is different."
         )
 
-    booking.status = "Confirmed"
+    booking.status = "Approved" # Changed from 'Confirmed'
     
     # Check if room should be hidden
-    confirmed_count = db.query(Booking).filter(Booking.room_id == room.id, Booking.status == "Confirmed").count()
-    if confirmed_count >= room.max_persons:
+    approved_count = db.query(Booking).filter(Booking.room_id == room.id, Booking.status == "Approved").count()
+    if approved_count >= room.max_persons:
         room.is_available = False
     
     db.commit()
-    return {"message": "Booking confirmed from dashboard!"}
+    return {"message": "Booking approved successfully!"}
 
 # 4a. Reject Booking from Dashboard
 @router.put("/dashboard/reject-booking/{booking_id}")
@@ -152,4 +152,4 @@ def dashboard_reject_booking(booking_id: int, owner_email: str, db: Session = De
 
     booking.status = "Rejected"
     db.commit()
-    return {"message": "Booking rejected successfully"}
+    return {"message": "Booking request rejected"}

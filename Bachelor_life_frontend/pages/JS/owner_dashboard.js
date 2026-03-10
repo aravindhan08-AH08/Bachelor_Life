@@ -153,7 +153,7 @@ async function renderDashboard() {
         const row = document.createElement("tr");
         let actionHtml = "";
 
-        if (booking.status === "Pending") {
+        if (booking.status === "Requested") {
           actionHtml = `
                         <div class="d-flex-gap-5">
                             <button class="btn-approve-small" onclick="approveBooking(${booking.id})">Approve</button>
