@@ -11,7 +11,7 @@ const isLocal = (
 
 // Allow manual override via localStorage if auto-detection fails
 const manualBackend = localStorage.getItem("BACKEND_URL");
-const API_BASE_URL = manualBackend || (isLocal ? `http://127.0.0.1:8000` : "https://bachelor-life.vercel.app");
+const API_BASE_URL = manualBackend || (isLocal ? `http://127.0.0.1:8000` : window.location.origin);
 
 console.log(`[API Config] Mode: ${isLocal ? "Local" : "Production"} | Base URL: ${API_BASE_URL}`);
 

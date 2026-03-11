@@ -247,12 +247,21 @@ document.addEventListener("DOMContentLoaded", async () => {
           );
           window.location.href = "owner_dashboard.html";
         } else {
-          const err = await res.json();
-          alert("Error: " + (err.detail || "Action failed"));
+          // Try to parse error as JSON first
+          let errorMsg = "Action failed";
+          try {
+            const err = await res.json();
+            errorMsg = err.detail || JSON.stringify(err);
+          } catch (jsonErr) {
+            // If not JSON, get raw text (could be Vercel's 413 or 504 page)
+            const textErr = await res.text();
+            errorMsg = `Server Error (${res.status}): ${textErr.substring(0, 100)}...`;
+          }
+          alert("Error: " + errorMsg);
         }
       } catch (err) {
         console.error(err);
-        alert("Request failed");
+        alert("Request failed. Please check your internet connection or try with smaller image files (Vercel has 4.5MB limit).");
       }
     });
   }

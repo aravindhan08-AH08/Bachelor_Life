@@ -29,8 +29,9 @@ if DATABASE_URL:
             creds, destination = rest.rsplit("@", 1)
             if ":" in creds:
                 user, password = creds.split(":", 1)
-                # Re-encode password safely
-                encoded_password = urllib.parse.quote_plus(password)
+                # Re-encode password safely (unquote first to avoid double-encoding)
+                clean_password = urllib.parse.unquote(password)
+                encoded_password = urllib.parse.quote_plus(clean_password)
                 main_part = f"{prefix}://{user}:{encoded_password}@{destination}"
             
         # Reconstruct URL

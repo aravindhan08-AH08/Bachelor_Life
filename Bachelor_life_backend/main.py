@@ -105,26 +105,33 @@ def ping():
 
     try:
         from sqlalchemy import text, inspect
-        with engine.connect() as conn:
-            conn.execute(text("SELECT 1"))
-            db_status = "Connected"
-            
-            # Show tables for debugging
-            inspector = inspect(engine)
-            tables = inspector.get_table_names()
-            if tables:
-                db_status += f" (Tables: {', '.join(tables)})"
+        # Detailed connection attempt
+        try:
+            with engine.connect() as conn:
+                conn.execute(text("SELECT 1"))
+                db_status = "Connected"
+                
+                # Show tables for debugging
+                try:
+                    inspector = inspect(engine)
+                    tables = inspector.get_table_names()
+                    if tables:
+                        db_status += f" (Tables: {', '.join(tables)})"
+                    else:
+                        db_status += " (No tables found!)"
+                except Exception as inspect_err:
+                    db_status += f" (Connected, but inspection failed: {str(inspect_err)})"
+        except Exception as conn_err:
+            error_detail = str(conn_err)
+            if "password authentication failed" in error_detail:
+                db_status = "Disconnected: Wrong Password or Username"
+            elif "Cannot assign requested address" in error_detail:
+                db_status = "Disconnected: IPv6/Direct connection failed (Switch to Pooler!)"
             else:
-                db_status += " (No tables found!)"
+                db_status = f"Disconnected: {error_detail[:150]}"
 
-    except Exception as e:
-        error_detail = str(e)
-        if "password authentication failed" in error_detail:
-            db_status = "Disconnected: Wrong Password or Username"
-        elif "Cannot assign requested address" in error_detail:
-            db_status = "Disconnected: IPv6/Direct connection failed (Switch to Pooler!)"
-        else:
-            db_status = f"Disconnected: {error_detail[:150]}"
+    except Exception as general_err:
+        db_status = f"System Error during Ping: {str(general_err)}"
 
     return {
         "version": "1.0.8",
