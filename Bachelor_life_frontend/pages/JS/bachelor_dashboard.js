@@ -20,6 +20,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (userDataStr) {
     const userData = JSON.parse(userDataStr);
+    const userNameElement = document.getElementById("userName");
+    if (userNameElement) {
+      userNameElement.textContent = userData.name || "Bachelor";
+    }
     fetchUserBookings(userData.id);
   }
 });
