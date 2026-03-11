@@ -81,7 +81,14 @@ def login_user(data: LoginRequest, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=401, detail="Invalid email or password")
     
-    if not verify_password(data.password, user.hashed_password):
+    # Try hash verification first
+    try:
+        is_verified = verify_password(data.password, user.hashed_password)
+    except Exception:
+        # Fallback to plain text for legacy data
+        is_verified = (data.password == user.hashed_password)
+
+    if not is_verified:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
     # Generate token (Even if frontend don't use it yet)

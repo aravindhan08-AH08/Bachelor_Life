@@ -13,8 +13,8 @@ SECRET_KEY = "bachelor_life_secret_key"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
-# Switch to PBKDF2-SHA256 to avoid ANY password length limits
-pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
+# schemes-il bcrypt and pbkdf2_sha256 rendu irukkum, ithu old matrum new hashes-ai handle seiyum
+pwd_context = CryptContext(schemes=["bcrypt", "pbkdf2_sha256"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 def verify_password(plain_password, hashed_password):

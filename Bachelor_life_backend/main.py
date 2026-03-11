@@ -33,10 +33,13 @@ async def global_exception_handler(request: Request, exc: Exception):
         return await http_exception_handler(request, exc)
     
     # Generic Server Crash Details (Like DB Connection loss or missing columns)
+    tb = traceback.format_exc()
+    print(f"CRITICAL ERROR: {exc}\n{tb}")
     return JSONResponse(
         status_code=500,
         content={
-            "detail": f"Database/System Error: {type(exc).__name__} - {str(exc)}"
+            "detail": f"Server Error: {type(exc).__name__} - {str(exc)}",
+            "traceback": tb if os.getenv("VERCEL") else "Check logs"
         }
     )
 

@@ -63,8 +63,10 @@ if not DATABASE_URL:
 
 engine = create_engine(
     DATABASE_URL, 
-    pool_pre_ping=True,  # Database connection-ah constant-ah check pannum
-    pool_recycle=300     # Connectoins refresh pannum (Vercel-ukku best)
+    pool_size=5,         # Vercel-la neraiya connections open aagaama thadukkum
+    max_overflow=10, 
+    pool_pre_ping=True,  
+    pool_recycle=300     
 )
 
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
