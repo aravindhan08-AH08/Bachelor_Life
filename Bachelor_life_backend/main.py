@@ -247,23 +247,41 @@ def fix_images_endpoint():
 def fix_database():
     try:
         from sqlalchemy import text
+        logs = []
         with engine.connect() as conn:
-            # 1. Drop the old constraint that points to "users"
-            try:
-                conn.execute(text("ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_user_id_fkey;"))
-            except: pass
+            # 1. Check if "users" table exists and rename to "customers" if needed
+            res = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users');"))
+            if res.scalar():
+                conn.execute(text("ALTER TABLE users RENAME TO customers;"))
+                logs.append("Renamed 'users' table to 'customers'.")
+            
+            # 2. Find and drop ALL foreign keys on bookings(user_id)
+            # This query finds the constraint name regardless of what it's called
+            find_fk_query = text("""
+                SELECT conname 
+                FROM pg_constraint 
+                WHERE conrelid = 'bookings'::regclass 
+                AND contype = 'f' 
+                AND pg_get_constraintdef(oid) LIKE '%user_id%';
+            """)
+            fks = conn.execute(find_fk_query).fetchall()
+            for fk in fks:
+                conn.execute(text(f"ALTER TABLE bookings DROP CONSTRAINT IF EXISTS {fk[0]};"))
+                logs.append(f"Dropped legacy constraint: {fk[0]}")
 
-            # 2. Add the correct constraint pointing to "customers"
+            # 3. Create the correct constraint pointing to "customers"
             try:
                 conn.execute(text("ALTER TABLE bookings ADD CONSTRAINT bookings_user_id_fkey FOREIGN KEY (user_id) REFERENCES customers(id) ON DELETE CASCADE;"))
+                logs.append("Created correct foreign key: bookings -> customers(id)")
             except Exception as e:
-                print(f"Constraint fix failed: {e}")
+                logs.append(f"Constraint creation failed (maybe table missing?): {str(e)}")
 
-            # 3. Ensure all rooms are approved (for convenience)
+            # 4. Ensure all rooms are approved
             conn.execute(text("UPDATE rooms SET is_approved = True WHERE is_approved = False;"))
+            logs.append("Ensured all rooms are approved.")
             
             conn.commit()
-        return {"status": "success", "message": "Database constraints and room approvals fixed!"}
+        return {"status": "success", "steps_taken": logs}
     except Exception as e:
         return {"status": "error", "message": str(e), "traceback": traceback.format_exc()}
 
