@@ -99,10 +99,18 @@ def get_owner_dashboard(owner_email: str, db: Session = Depends(get_db)):
             "user_email": c.email
         })
 
+    # Room images optimization for dashboard
+    rooms_data = []
+    for r in my_rooms:
+        d = {col.name: getattr(r, col.name) for col in r.__table__.columns}
+        if isinstance(d.get("image_url"), list) and len(d["image_url"]) > 0:
+            d["image_url"] = [d["image_url"][0]]
+        rooms_data.append(d)
+
     return {
         "owner_name": owner.owner_name,
         "total_rooms": len(my_rooms),
-        "rooms": [{col.name: getattr(r, col.name) for col in r.__table__.columns} for r in my_rooms],
+        "rooms": rooms_data,
         "bookings_received": bookings_data
     }
 

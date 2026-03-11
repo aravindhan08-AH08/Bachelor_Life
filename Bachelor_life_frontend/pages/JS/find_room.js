@@ -110,6 +110,17 @@ async function fetchRooms() {
   const roomContainer = document.querySelector(".room-container");
   if (!roomContainer) return;
 
+  // Caching Logic: 5 mins cache
+  const cachedData = sessionStorage.getItem("allRoomsCache");
+  const cacheTime = sessionStorage.getItem("allRoomsCacheTime");
+  const now = Date.now();
+
+  if (cachedData && cacheTime && now - cacheTime < 300000) {
+    allRooms = JSON.parse(cachedData);
+    renderRooms(allRooms);
+    return;
+  }
+
   roomContainer.innerHTML =
     '<p style="text-align:center; width:100%;">Loading rooms...</p>';
 
@@ -121,6 +132,11 @@ async function fetchRooms() {
     if (!response.ok) throw new Error("Failed to fetch rooms");
 
     allRooms = await response.json(); // Store globally
+    
+    // Set Cache
+    sessionStorage.setItem("allRoomsCache", JSON.stringify(allRooms));
+    sessionStorage.setItem("allRoomsCacheTime", now.toString());
+
     renderRooms(allRooms);
   } catch (error) {
     console.error("Error loading rooms:", error);
@@ -221,7 +237,7 @@ function renderRooms(roomsToRender) {
     card.classList.add("room-card");
     card.innerHTML = `
       <div class="image-box">
-        <img src="${imgSrc}" alt="${room.title}" class="room-img" onerror="console.error('Image Load Error for ${room.title}:', this.src); this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Not+Found';">
+        <img src="${imgSrc}" alt="${room.title}" class="room-img" loading="lazy" onerror="console.error('Image Load Error for ${room.title}:', this.src); this.onerror=null; this.src='https://placehold.co/600x400?text=Image+Not+Found';">
       </div>
       <div class="room-info">
           <h3>${room.title}</h3>

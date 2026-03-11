@@ -14,8 +14,8 @@ class Room(Base):
     description = Column(String)
     bachelor_allowed = Column(Boolean, default=True)
     max_persons = Column(Integer, default=1)
-    is_approved = Column(Boolean, default=False)
-    is_available = Column(Boolean, default=True)
+    is_approved = Column(Boolean, default=False, index=True)
+    is_available = Column(Boolean, default=True, index=True)
     owner_id = Column(Integer, ForeignKey("owners.id"))
     
     # Amenities

@@ -19,7 +19,26 @@ except OSError:
 @router.get("/")
 def get_all_rooms(db: Session = Depends(get_db)):
     rooms = db.query(Room).filter(Room.is_approved == True, Room.is_available == True).all()
-    return [{c.name: getattr(r, c.name) for c in r.__table__.columns} for r in rooms]
+    
+    # PERFORMANCE OPTIMIZATION: List view-ukku ella images-um koodathalai (High data usage)
+    # Mudhal image-ai mattum anuppuvom, ithu page-ai romba fast-aakkum.
+    result = []
+    for r in rooms:
+        data = {c.name: getattr(r, c.name) for c in r.__table__.columns}
+        
+        # Handle Image URL Optimization
+        raw_images = data.get("image_url")
+        if isinstance(raw_images, list) and len(raw_images) > 0:
+            data["image_url"] = [raw_images[0]] # Return only first image as a list
+        elif isinstance(raw_images, str) and raw_images.startswith("["):
+             import json
+             try:
+                 parsed = json.loads(raw_images.replace("'", '"'))
+                 if parsed: data["image_url"] = [parsed[0]]
+             except: pass
+             
+        result.append(data)
+    return result
 
 # 1.5 GET SINGLE ROOM DETAILS
 @router.get("/{room_id}")

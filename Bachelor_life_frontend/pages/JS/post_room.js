@@ -11,6 +11,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // Image Compression Utility (Speeds up upload & reduces Vercel payload)
+  async function compressImage(file) {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (event) => {
+        const img = new Image();
+        img.src = event.target.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          const MAX_WIDTH = 1024; // Standard HD width
+          const MAX_HEIGHT = 1024;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          canvas.toBlob(
+            (blob) => {
+              resolve(new File([blob], file.name, { type: "image/jpeg" }));
+            },
+            "image/jpeg",
+            0.7, // 70% Quality (Significant size reduction)
+          );
+        };
+      };
+    });
+  }
+
   // 2. Dynamic Navbar Logic
   if (loginBtn) {
     loginBtn.textContent = "Logout";
@@ -215,16 +257,29 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
       keys.forEach((key, i) => formData.append(key, checkboxes[i].checked));
 
-      // Files
+      // Files (Compressed for speed)
+      const submitBtn = document.querySelector(".btn-submit");
+      const originalBtnText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Processing Images...";
+
       if (imageInput.files.length > 0) {
-        Array.from(imageInput.files).forEach((f) =>
-          formData.append("files", f),
-        );
+        for (const f of Array.from(imageInput.files)) {
+          if (f.type.startsWith("image/")) {
+            const compressed = await compressImage(f);
+            formData.append("files", compressed);
+          } else {
+            formData.append("files", f);
+          }
+        }
       } else if (!isEditMode) {
         alert("Please upload at least one image");
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
         return;
       }
 
+      submitBtn.textContent = isEditMode ? "Saving Changes..." : "Listing Room...";
       if (videoInput.files[0]) {
         formData.append("video_file", videoInput.files[0]);
       }
@@ -261,7 +316,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (err) {
         console.error(err);
-        alert("Request failed. Please check your internet connection or try with smaller image files (Vercel has 4.5MB limit).");
+        alert("Request failed. Please check your internet connection or try with smaller image files.");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
       }
     });
   }
