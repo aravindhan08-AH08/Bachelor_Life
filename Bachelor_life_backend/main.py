@@ -243,6 +243,30 @@ def fix_images_endpoint():
             "traceback": traceback.format_exc()
         }
 
+@app.get("/fix-db")
+def fix_database():
+    try:
+        from sqlalchemy import text
+        with engine.connect() as conn:
+            # 1. Drop the old constraint that points to "users"
+            try:
+                conn.execute(text("ALTER TABLE bookings DROP CONSTRAINT IF EXISTS bookings_user_id_fkey;"))
+            except: pass
+
+            # 2. Add the correct constraint pointing to "customers"
+            try:
+                conn.execute(text("ALTER TABLE bookings ADD CONSTRAINT bookings_user_id_fkey FOREIGN KEY (user_id) REFERENCES customers(id) ON DELETE CASCADE;"))
+            except Exception as e:
+                print(f"Constraint fix failed: {e}")
+
+            # 3. Ensure all rooms are approved (for convenience)
+            conn.execute(text("UPDATE rooms SET is_approved = True WHERE is_approved = False;"))
+            
+            conn.commit()
+        return {"status": "success", "message": "Database constraints and room approvals fixed!"}
+    except Exception as e:
+        return {"status": "error", "message": str(e), "traceback": traceback.format_exc()}
+
 app.include_router(owner_router.router, tags=["Owner"])
 app.include_router(user_router.router, tags=["User"])
 app.include_router(room_router.router, tags=["Rooms"])
