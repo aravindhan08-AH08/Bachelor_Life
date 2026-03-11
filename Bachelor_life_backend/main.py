@@ -249,11 +249,19 @@ def fix_database():
         from sqlalchemy import text
         logs = []
         with engine.connect() as conn:
-            # 1. Check if "users" table exists and rename to "customers" if needed
-            res = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users');"))
-            if res.scalar():
-                conn.execute(text("ALTER TABLE users RENAME TO customers;"))
-                logs.append("Renamed 'users' table to 'customers'.")
+            # 1. Handle table renaming safely
+            users_exist = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'users');")).scalar()
+            customers_exist = conn.execute(text("SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'customers');")).scalar()
+            
+            if users_exist:
+                if customers_exist:
+                    # Both exist, so just drop users (customers is the new standard)
+                    conn.execute(text("DROP TABLE users CASCADE;"))
+                    logs.append("Dropped redundant 'users' table.")
+                else:
+                    # Only users exists, rename it
+                    conn.execute(text("ALTER TABLE users RENAME TO customers;"))
+                    logs.append("Renamed 'users' table to 'customers'.")
             
             # 2. Find and drop ALL foreign keys on bookings(user_id)
             # This query finds the constraint name regardless of what it's called
