@@ -65,15 +65,22 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (statusRes.ok) {
             const statusData = await statusRes.json();
             // Match user label preferences and add alert click
-            if (statusData.status === "Requested" || statusData.status === "Approved") {
+            if (statusData.status && statusData.status !== "none") {
               const btn = document.getElementById("book-now-btn");
               if (btn) {
-                // Change text: requested/approved
-                btn.textContent = statusData.status === "Approved" ? "Approved" : "Requested";
+                // Change text based on status
+                btn.textContent = statusData.status;
 
-                // Clicking shows alert, no longer disabled
+                // UI adjustments based on status
                 btn.disabled = false;
-                btn.style.backgroundColor = statusData.status === "Approved" ? "green" : "orange";
+                if (statusData.status === "Approved") {
+                  btn.style.backgroundColor = "green";
+                } else if (statusData.status === "Rejected") {
+                  btn.style.backgroundColor = "#dc3545"; // Red
+                } else {
+                  btn.style.backgroundColor = "orange";
+                }
+
                 btn.style.color = "white";
                 btn.style.cursor = "pointer";
 
@@ -82,7 +89,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btn.parentNode.replaceChild(newBtn, btn);
 
                 newBtn.addEventListener("click", () => {
-                  alert(`Your booking status for this room is: ${statusData.status}`);
+                  alert(`Your current booking status for this room is: ${statusData.status}. You can only make one request per room.`);
                 });
               }
             }
