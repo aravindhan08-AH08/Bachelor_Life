@@ -66,9 +66,9 @@ async function renderDashboard() {
           const raw = room.image_url;
           if (Array.isArray(raw)) {
             images = raw;
-          } else if (typeof raw === 'string' && raw.trim() !== '') {
+          } else if (typeof raw === "string" && raw.trim() !== "") {
             let str = raw.trim();
-            if (str.startsWith('[') && str.endsWith(']')) {
+            if (str.startsWith("[") && str.endsWith("]")) {
               try {
                 // Try standard JSON parse
                 images = JSON.parse(str);
@@ -79,13 +79,15 @@ async function renderDashboard() {
                 } catch (e2) {
                   // Manual split as last resort
                   const content = str.substring(1, str.length - 1);
-                  images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+                  images = content
+                    .split(",")
+                    .map((s) => s.trim().replace(/^['"]|['"]$/g, ""));
                 }
               }
             } else {
               images = [str];
             }
-          } else if (raw && typeof raw === 'object') {
+          } else if (raw && typeof raw === "object") {
             // If it's an object but not array, try to extract values
             images = Object.values(raw);
           }
@@ -98,14 +100,15 @@ async function renderDashboard() {
           if (!path) return "";
           let pathStr = path.toString().trim();
           // Remove extra quotes or escaped quotes
-          pathStr = pathStr.replace(/^['"]|['"]$/g, '').replace(/\\"/g, '"');
+          pathStr = pathStr.replace(/^['"]|['"]$/g, "").replace(/\\"/g, '"');
 
           if (pathStr.startsWith("data:")) return pathStr;
           if (pathStr.startsWith("http")) return pathStr;
 
           // Remove any accidental folder prefixes if they exist in the path string
           let cleanP = pathStr.replace(/\\/g, "/");
-          cleanP = cleanP.replace(/^Bachelor_life_backend\//, "")
+          cleanP = cleanP
+            .replace(/^Bachelor_life_backend\//, "")
             .replace(/^Bachelor_life_frontend\//, "")
             .replace(/^\/+/, "");
 

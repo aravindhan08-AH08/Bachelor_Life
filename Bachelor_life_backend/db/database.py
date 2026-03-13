@@ -4,7 +4,6 @@ from core.config import DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DB_PORT, DATABASE
 import os
 import urllib.parse
 
-# Priority: Use DATABASE_URL (standard for Vercel/Neon/Supabase)
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if DATABASE_URL:

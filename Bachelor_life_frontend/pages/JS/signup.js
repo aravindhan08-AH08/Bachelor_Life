@@ -86,7 +86,9 @@ if (signupForm) {
           const errorData = await response.json();
           if (errorData.detail) {
             if (Array.isArray(errorData.detail)) {
-              errorMsg = errorData.detail.map(err => `${err.loc.join('.')}: ${err.msg}`).join("\n");
+              errorMsg = errorData.detail
+                .map((err) => `${err.loc.join(".")}: ${err.msg}`)
+                .join("\n");
             } else {
               errorMsg = errorData.detail;
             }
@@ -94,14 +96,17 @@ if (signupForm) {
         } else {
           // Handle non-JSON errors (like 404 HTML pages or 500 runtime errors)
           const text = await response.text();
-          const preview = text.substring(0, 100).replace(/<[^>]*>/g, ''); // Strip HTML tags for alert
+          const preview = text.substring(0, 100).replace(/<[^>]*>/g, ""); // Strip HTML tags for alert
           errorMsg = `Server error (${response.status}). ${preview}... Please check Vercel Logs or Database connection.`;
         }
         alert("Error:\n" + errorMsg);
       }
     } catch (error) {
       console.error(error);
-      alert("Connection Error. The backend might be offline or blocked by CORS. Details: " + error.message);
+      alert(
+        "Connection Error. The backend might be offline or blocked by CORS. Details: " +
+          error.message,
+      );
     }
   });
 }

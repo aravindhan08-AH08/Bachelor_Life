@@ -123,7 +123,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (roomTypeSelect) {
     roomTypeSelect.addEventListener("change", function () {
       const capacityInput = document.getElementById("sharing-capacity");
-      const map = { shared: 2, single: 1, "1bhk": 2, studio: 4, "3bhk": 6, pg: 1 };
+      const map = {
+        shared: 2,
+        single: 1,
+        "1bhk": 2,
+        studio: 4,
+        "3bhk": 6,
+        pg: 1,
+      };
       if (map[this.value]) capacityInput.value = map[this.value];
     });
   }
@@ -196,7 +203,9 @@ document.addEventListener("DOMContentLoaded", async () => {
               img.src = pathStr;
             } else {
               const cleanP = pathStr.replace(/\\/g, "/").replace(/^\/+/, "");
-              img.src = cleanP.startsWith('http') ? cleanP : `${apiBase}/${cleanP}`;
+              img.src = cleanP.startsWith("http")
+                ? cleanP
+                : `${apiBase}/${cleanP}`;
             }
             img.className = "preview-img";
             imagePreviewContainer.appendChild(img);
@@ -279,7 +288,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      submitBtn.textContent = isEditMode ? "Saving Changes..." : "Listing Room...";
+      submitBtn.textContent = isEditMode
+        ? "Saving Changes..."
+        : "Listing Room...";
       if (videoInput.files[0]) {
         formData.append("video_file", videoInput.files[0]);
       }
@@ -316,7 +327,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } catch (err) {
         console.error(err);
-        alert("Request failed. Please check your internet connection or try with smaller image files.");
+        alert(
+          "Request failed. Please check your internet connection or try with smaller image files.",
+        );
       } finally {
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;

@@ -1,123 +1,131 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="img-src 'self' data: https:;"
+    />
+    <title>Room Details - Bachelor Life</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../CSS/find_room.css" />
+    <!-- Reusing find_room.css for basic tokens, might need specific styles -->
+    <link rel="stylesheet" href="../CSS/room_details.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="img-src 'self' data: https:;">
-  <title>Room Details - Bachelor Life</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link rel="stylesheet" href="../CSS/find_room.css" />
-  <!-- Reusing find_room.css for basic tokens, might need specific styles -->
-  <link rel="stylesheet" href="../CSS/room_details.css" />
-</head>
-
-<body>
-  <header class="navbar">
-    <div class="container navbar-content">
-      <div class="logo">
-        <span class="logo-bachelor">Bachelor</span><span class="logo-life">Life</span>
-      </div>
-      <nav class="nav-links" id="nav-links">
-        <a href="../../index.html">Home</a>
-        <a href="find_room.html">Find Rooms</a>
-        <a href="post_room.html">Post Room</a>
-      </nav>
-      <a href="login.html" class="login-btn">Login</a>
-    </div>
-  </header>
-
-  <main class="room-details-container">
-    <div id="loading">Loading room details...</div>
-
-    <div id="room-content">
-      <div class="details-header">
-        <div class="details-title">
-          <h1 id="room-title">Room Title</h1>
-          <p id="room-location">
-            <i class="fas fa-map-marker-alt"></i> Location
-          </p>
+  <body>
+    <header class="navbar">
+      <div class="container navbar-content">
+        <div class="logo">
+          <span class="logo-bachelor">Bachelor</span
+          ><span class="logo-life">Life</span>
         </div>
-        <div class="price-container">
-          <div class="price-tag" id="room-rent">₹0 / month</div>
-          <div class="deposit-tag" id="room-deposit">Deposit: ₹0</div>
-        </div>
+        <nav class="nav-links" id="nav-links">
+          <a href="../../index.html">Home</a>
+          <a href="find_room.html">Find Rooms</a>
+          <a href="post_room.html">Post Room</a>
+        </nav>
+        <a href="login.html" class="login-btn">Login</a>
       </div>
+    </header>
 
-      <div class="image-gallery" id="image-gallery">
-        <!-- Images injected here -->
-      </div>
-      <div class="details-grid">
-        <div class="info-column">
-          <section class="info-section">
-            <h3>Description</h3>
-            <p class="description-text" id="room-description">
-              No description available.
+    <main class="room-details-container">
+      <div id="loading">Loading room details...</div>
+
+      <div id="room-content">
+        <div class="details-header">
+          <div class="details-title">
+            <h1 id="room-title">Room Title</h1>
+            <p id="room-location">
+              <i class="fas fa-map-marker-alt"></i> Location
             </p>
-          </section>
-
-          <section class="info-section" id="virtual-tour-section">
-            <h3>Virtual Tour</h3>
-            <div id="video-container">
-              <!-- Video embed injected here -->
-            </div>
-          </section>
-
-          <section class="info-section">
-            <h3>Amenities</h3>
-            <div class="amenities-list" id="amenities-list">
-              <!-- Amenities injected here -->
-            </div>
-          </section>
-
-          <section class="info-section">
-            <h3>Details</h3>
-            <ul class="details-list">
-              <li>
-                <strong>Room Type:</strong> <span id="room-type">Single</span>
-              </li>
-              <li>
-                <strong>Capacity:</strong>
-                <span id="room-capacity">1 Person</span>
-              </li>
-              <li>
-                <strong>Bachelor Friendly:</strong>
-                <span id="room-bachelor">Yes</span>
-              </li>
-              <li>
-                <strong>Preferred Gender:</strong>
-                <span id="room-gender">Any</span>
-              </li>
-            </ul>
-          </section>
+          </div>
+          <div class="price-container">
+            <div class="price-tag" id="room-rent">₹0 / month</div>
+            <div class="deposit-tag" id="room-deposit">Deposit: ₹0</div>
+          </div>
         </div>
 
-        <div class="action-column">
-          <div class="booking-card interested-section">
-            <h3>Interested?</h3>
-            <p>
-              Book this room now to send a request to the owner. You'll be
-              notified once approved.
-            </p>
-            <button class="booking-btn" id="book-now-btn">Book Now</button>
-            <div class="owner-info">
-              <!-- Injected by JS -->
+        <div class="image-gallery" id="image-gallery">
+          <!-- Images injected here -->
+        </div>
+        <div class="details-grid">
+          <div class="info-column">
+            <section class="info-section">
+              <h3>Description</h3>
+              <p class="description-text" id="room-description">
+                No description available.
+              </p>
+            </section>
+
+            <section class="info-section" id="virtual-tour-section">
+              <h3>Virtual Tour</h3>
+              <div id="video-container">
+                <!-- Video embed injected here -->
+              </div>
+            </section>
+
+            <section class="info-section">
+              <h3>Amenities</h3>
+              <div class="amenities-list" id="amenities-list">
+                <!-- Amenities injected here -->
+              </div>
+            </section>
+
+            <section class="info-section">
+              <h3>Details</h3>
+              <ul class="details-list">
+                <li>
+                  <strong>Room Type:</strong> <span id="room-type">Single</span>
+                </li>
+                <li>
+                  <strong>Capacity:</strong>
+                  <span id="room-capacity">1 Person</span>
+                </li>
+                <li>
+                  <strong>Bachelor Friendly:</strong>
+                  <span id="room-bachelor">Yes</span>
+                </li>
+                <li>
+                  <strong>Preferred Gender:</strong>
+                  <span id="room-gender">Any</span>
+                </li>
+              </ul>
+            </section>
+          </div>
+
+          <div class="action-column">
+            <div class="booking-card interested-section">
+              <h3>Interested?</h3>
+              <p>
+                Book this room now to send a request to the owner. You'll be
+                notified once approved.
+              </p>
+              <button class="booking-btn" id="book-now-btn">Book Now</button>
+              <div class="owner-info">
+                <!-- Injected by JS -->
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
 
-  <footer>
-    <p>© 2025 Bachelor Life | All Rights Reserved</p>
-    <a href="about.html">About Us |</a>
-    <a href="contact.html">Contact</a>
-  </footer>
-</body>
+    <footer>
+      <p>© 2025 Bachelor Life | All Rights Reserved</p>
+      <a href="about.html">About Us |</a>
+      <a href="contact.html">Contact</a>
+    </footer>
+  </body>
 
-<script src="../JS/api-config.js"></script>
-<script src="../JS/room_details.js"></script>
-
+  <script src="../JS/api-config.js"></script>
+  <script src="../JS/room_details.js"></script>
 </html>

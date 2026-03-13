@@ -91,7 +91,6 @@ function renderBookings(bookings) {
     console.log("DEBUG: Updated Rejected Count:", rejectedCount);
   }
 
-
   if (bookings.length === 0) {
     tbody.innerHTML = `<tr><td colspan="4" class="no-data-cell">You haven't made any booking requests yet. <a href="find_room.html">Find a room now!</a></td></tr>`;
     return;
@@ -121,10 +120,15 @@ async function cancelRequest(bookingId) {
   const userData = JSON.parse(userDataStr);
 
   try {
-    const apiBase = window.API_CONFIG ? window.API_CONFIG.BASE_URL : "http://127.0.0.1:8000";
-    const response = await fetch(`${apiBase}/booking/${bookingId}?user_id=${userData.id}`, {
-      method: "DELETE",
-    });
+    const apiBase = window.API_CONFIG
+      ? window.API_CONFIG.BASE_URL
+      : "http://127.0.0.1:8000";
+    const response = await fetch(
+      `${apiBase}/booking/${bookingId}?user_id=${userData.id}`,
+      {
+        method: "DELETE",
+      },
+    );
 
     if (response.ok) {
       alert("Booking request cancelled successfully!");
@@ -137,4 +141,5 @@ async function cancelRequest(bookingId) {
     console.error("Error:", error);
     alert("Connection error.");
   }
-} window.cancelRequest = cancelRequest;
+}
+window.cancelRequest = cancelRequest;

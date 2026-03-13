@@ -155,7 +155,8 @@ header.navbar {
   color: #1e293b;
 }
 
-input, select {
+input,
+select {
   width: 100%;
   padding: 12px;
   border: 1px solid #e2e8f0;
@@ -167,7 +168,8 @@ input, select {
   background-color: white;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
   border-color: #3b82f6;
 }
 

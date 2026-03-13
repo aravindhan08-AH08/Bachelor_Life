@@ -1,113 +1,117 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bachelor Dashboard - Bachelor Life</title>
+    <link rel="stylesheet" href="../CSS/Index.css" />
+    <link rel="stylesheet" href="../CSS/owner_dashboard.css" />
+    <link rel="stylesheet" href="../CSS/bachelor_dashboard.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bachelor Dashboard - Bachelor Life</title>
-  <link rel="stylesheet" href="../CSS/Index.css" />
-  <link rel="stylesheet" href="../CSS/owner_dashboard.css" />
-  <link rel="stylesheet" href="../CSS/bachelor_dashboard.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-</head>
-
-<body>
-  <header class="navbar">
-    <div class="logo">
-      <span class="logo-bachelor">Bachelor</span><span class="logo-life">Life</span>
-    </div>
-    <nav class="nav-links" id="nav-links">
-      <a href="../../index.html">Home</a>
-      <a href="find_room.html">Find Rooms</a>
-      <a href="post_room.html">Post Room</a>
-      <a href="bachelor_dashboard.html" class="active-link">Dashboard</a>
-    </nav>
-    <div class="nav-right-group">
-      <a href="#" class="login-btn">Logout</a>
-    </div>
-  </header>
-
-  <main class="dashboard-container">
-    <div class="dashboard-header">
-      <div>
-        <h1 class="dashboard-title">Welcome, <span id="userName">Bachelor</span>!</h1>
-        <p class="dashboard-subtitle">
-          Track the status of your room requests here.
-        </p>
+  <body>
+    <header class="navbar">
+      <div class="logo">
+        <span class="logo-bachelor">Bachelor</span
+        ><span class="logo-life">Life</span>
       </div>
-    </div>
+      <nav class="nav-links" id="nav-links">
+        <a href="../../index.html">Home</a>
+        <a href="find_room.html">Find Rooms</a>
+        <a href="post_room.html">Post Room</a>
+        <a href="bachelor_dashboard.html" class="active-link">Dashboard</a>
+      </nav>
+      <div class="nav-right-group">
+        <a href="#" class="login-btn">Logout</a>
+      </div>
+    </header>
 
-    <!-- Stats Overview -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">
-          <i class="fas fa-list-alt"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="totalRequests">0</h3>
-          <p>Total Requests</p>
+    <main class="dashboard-container">
+      <div class="dashboard-header">
+        <div>
+          <h1 class="dashboard-title">
+            Welcome, <span id="userName">Bachelor</span>!
+          </h1>
+          <p class="dashboard-subtitle">
+            Track the status of your room requests here.
+          </p>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon pending-icon">
-          <i class="fas fa-clock"></i>
+
+      <!-- Stats Overview -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-list-alt"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="totalRequests">0</h3>
+            <p>Total Requests</p>
+          </div>
         </div>
-        <div class="stat-info">
-          <h3 id="pendingRequests">0</h3>
-          <p>Requested</p>
+        <div class="stat-card">
+          <div class="stat-icon pending-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="pendingRequests">0</h3>
+            <p>Requested</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon confirmed-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="confirmedRequests">0</h3>
+            <p>Approved</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon rejected-icon">
+            <i class="fas fa-times-circle" style="color: #dc3545"></i>
+          </div>
+          <div class="stat-info">
+            <h3 id="rejectedRequests">0</h3>
+            <p>Rejected</p>
+          </div>
         </div>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon confirmed-icon">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="confirmedRequests">0</h3>
-          <p>Approved</p>
-        </div>
+
+      <!-- My Bookings Table -->
+      <div class="section-header">
+        <h2 class="section-title">Request History</h2>
       </div>
-      <div class="stat-card">
-        <div class="stat-icon rejected-icon">
-          <i class="fas fa-times-circle" style="color: #dc3545;"></i>
-        </div>
-        <div class="stat-info">
-          <h3 id="rejectedRequests">0</h3>
-          <p>Rejected</p>
-        </div>
+      <div class="bookings-section">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Room Title</th>
+              <th>Location</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsTableBody">
+            <tr>
+              <td colspan="4" class="no-data-cell">Loading your requests...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </div>
+    </main>
 
-    <!-- My Bookings Table -->
-    <div class="section-header">
-      <h2 class="section-title">Request History</h2>
-    </div>
-    <div class="bookings-section">
-      <table class="bookings-table">
-        <thead>
-          <tr>
-            <th>Room Title</th>
-            <th>Location</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="bookingsTableBody">
-          <tr>
-            <td colspan="4" class="no-data-cell">Loading your requests...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </main>
+    <footer>
+      <p>© 2025 Bachelor Life | All Rights Reserved</p>
+      <a href="about.html">About Us |</a>
+      <a href="contact.html">Contact</a>
+    </footer>
 
-  <footer>
-    <p>© 2025 Bachelor Life | All Rights Reserved</p>
-    <a href="about.html">About Us |</a>
-    <a href="contact.html">Contact</a>
-  </footer>
-
-  <script src="../JS/api-config.js"></script>
-  <script src="../JS/bachelor_dashboard.js"></script>
-</body>
-
+    <script src="../JS/api-config.js"></script>
+    <script src="../JS/bachelor_dashboard.js"></script>
+  </body>
 </html>

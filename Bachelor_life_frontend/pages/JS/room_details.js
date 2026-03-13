@@ -61,7 +61,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const userData = JSON.parse(localStorage.getItem("userData"));
       if (userData && userData.id) {
         try {
-          const statusRes = await fetch(`${apiBase}/booking/check-status/${roomId}?user_id=${userData.id}`);
+          const statusRes = await fetch(
+            `${apiBase}/booking/check-status/${roomId}?user_id=${userData.id}`,
+          );
           if (statusRes.ok) {
             const statusData = await statusRes.json();
             // Match user label preferences and add alert click
@@ -89,7 +91,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btn.parentNode.replaceChild(newBtn, btn);
 
                 newBtn.addEventListener("click", () => {
-                  alert(`Your current booking status for this room is: ${statusData.status}. You can only make one request per room.`);
+                  alert(
+                    `Your current booking status for this room is: ${statusData.status}. You can only make one request per room.`,
+                  );
                 });
               }
             }
@@ -141,17 +145,19 @@ function renderRoomDetails(room) {
     let displayType = room.room_type || "Room";
     const typeMap = {
       "1bhk": "1 BHK",
-      "studio": "2 BHK",
-      "single": "Single Room",
-      "shared": "Shared Room",
+      studio: "2 BHK",
+      single: "Single Room",
+      shared: "Shared Room",
       "3bhk": "3 BHK",
-      "pg": "PG / Hostel"
+      pg: "PG / Hostel",
     };
     setSafeText("room-type", typeMap[displayType.toLowerCase()] || displayType);
     setSafeText("room-capacity", `${room.max_persons || 1} Person(s)`);
     setSafeText("room-bachelor", room.bachelor_allowed ? "Yes" : "No");
     setSafeText("room-gender", room.gender || "Any");
-  } catch (e) { console.error("Error rendering basic info:", e); }
+  } catch (e) {
+    console.error("Error rendering basic info:", e);
+  }
 
   // 2. Owner Information
   try {
@@ -171,7 +177,9 @@ function renderRoomDetails(room) {
               <p class="owner-contact-item"><i class="fas fa-envelope"></i> ${ownerEmail}</p>
           `;
     }
-  } catch (e) { console.error("Error rendering owner info:", e); }
+  } catch (e) {
+    console.error("Error rendering owner info:", e);
+  }
 
   // 3. Robust Image Gallery
   const gallery = document.getElementById("image-gallery");
@@ -187,9 +195,9 @@ function renderRoomDetails(room) {
       const raw = room.image_url;
       if (Array.isArray(raw)) {
         images = raw;
-      } else if (typeof raw === 'string' && raw.trim() !== '') {
+      } else if (typeof raw === "string" && raw.trim() !== "") {
         let str = raw.trim();
-        if (str.startsWith('[') && str.endsWith(']')) {
+        if (str.startsWith("[") && str.endsWith("]")) {
           try {
             // Try standard JSON parse
             images = JSON.parse(str);
@@ -200,13 +208,15 @@ function renderRoomDetails(room) {
             } catch (e2) {
               // Manual split as last resort
               const content = str.substring(1, str.length - 1);
-              images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+              images = content
+                .split(",")
+                .map((s) => s.trim().replace(/^['"]|['"]$/g, ""));
             }
           }
         } else {
           images = [str];
         }
-      } else if (raw && typeof raw === 'object') {
+      } else if (raw && typeof raw === "object") {
         // If it's an object but not array, try to extract values
         images = Object.values(raw);
       }
@@ -215,13 +225,15 @@ function renderRoomDetails(room) {
       images = [];
     }
 
-    const apiBase = window.API_CONFIG ? window.API_CONFIG.BASE_URL : "http://127.0.0.1:8000";
+    const apiBase = window.API_CONFIG
+      ? window.API_CONFIG.BASE_URL
+      : "http://127.0.0.1:8000";
 
     const getCleanPath = (path) => {
       if (!path) return "";
       let pathStr = path.toString().trim();
       // Remove extra quotes or escaped quotes
-      pathStr = pathStr.replace(/^['"]|['"]$/g, '').replace(/\\"/g, '"');
+      pathStr = pathStr.replace(/^['"]|['"]$/g, "").replace(/\\"/g, '"');
 
       if (pathStr.startsWith("data:")) return pathStr;
       if (pathStr.startsWith("http")) return pathStr;
@@ -258,11 +270,15 @@ function renderRoomDetails(room) {
         thumb.src = getCleanPath(path);
         thumb.className = `thumb-image ${index === 0 ? "active-thumb" : ""}`;
         thumb.onclick = () => {
-          document.getElementById("main-display-image").src = getCleanPath(path);
-          document.querySelectorAll(".thumb-image").forEach(t => t.classList.remove("active-thumb"));
+          document.getElementById("main-display-image").src =
+            getCleanPath(path);
+          document
+            .querySelectorAll(".thumb-image")
+            .forEach((t) => t.classList.remove("active-thumb"));
           thumb.classList.add("active-thumb");
         };
-        thumb.onerror = () => (thumb.src = "https://placehold.co/100x100?text=Error");
+        thumb.onerror = () =>
+          (thumb.src = "https://placehold.co/100x100?text=Error");
         thumbContainer.appendChild(thumb);
       });
       gallery.appendChild(thumbContainer);
@@ -296,7 +312,9 @@ function renderRoomDetails(room) {
         }
       });
     }
-  } catch (e) { console.error("Error rendering amenities:", e); }
+  } catch (e) {
+    console.error("Error rendering amenities:", e);
+  }
 
   // 5. Virtual Tour
   try {
@@ -311,10 +329,13 @@ function renderRoomDetails(room) {
         if (url.includes("youtube.com") || url.includes("youtu.be")) {
           let videoId = "";
           if (url.includes("v=")) videoId = url.split("v=")[1].split("&")[0];
-          else if (url.includes("youtu.be/")) videoId = url.split("youtu.be/")[1].split("?")[0];
+          else if (url.includes("youtu.be/"))
+            videoId = url.split("youtu.be/")[1].split("?")[0];
           videoHtml = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allowfullscreen class="video-frame"></iframe>`;
         } else if (url.startsWith("static/room_videos/")) {
-          const apiBase = window.API_CONFIG ? window.API_CONFIG.BASE_URL : "http://127.0.0.1:8000";
+          const apiBase = window.API_CONFIG
+            ? window.API_CONFIG.BASE_URL
+            : "http://127.0.0.1:8000";
           const videoPath = `${apiBase}/${url.replace(/\\/g, "/")}`;
           videoHtml = `<video class="video-player" controls><source src="${videoPath}" type="video/mp4">Your browser does not support the video tag.</video>`;
         } else if (url.trim() !== "") {
@@ -323,7 +344,9 @@ function renderRoomDetails(room) {
         if (videoHtml) videoContainer.innerHTML = videoHtml;
       }
     }
-  } catch (e) { console.error("Error rendering virtual tour:", e); }
+  } catch (e) {
+    console.error("Error rendering virtual tour:", e);
+  }
 
   // 6. Booking Button
   const bookBtn = document.getElementById("book-now-btn");

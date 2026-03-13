@@ -132,7 +132,7 @@ async function fetchRooms() {
     if (!response.ok) throw new Error("Failed to fetch rooms");
 
     allRooms = await response.json(); // Store globally
-    
+
     // Set Cache
     sessionStorage.setItem("allRoomsCache", JSON.stringify(allRooms));
     sessionStorage.setItem("allRoomsCacheTime", now.toString());
@@ -183,9 +183,9 @@ function renderRooms(roomsToRender) {
       const raw = room.image_url;
       if (Array.isArray(raw)) {
         images = raw;
-      } else if (typeof raw === 'string' && raw.trim() !== '') {
+      } else if (typeof raw === "string" && raw.trim() !== "") {
         let str = raw.trim();
-        if (str.startsWith('[') && str.endsWith(']')) {
+        if (str.startsWith("[") && str.endsWith("]")) {
           try {
             // Try standard JSON parse
             images = JSON.parse(str);
@@ -196,13 +196,15 @@ function renderRooms(roomsToRender) {
             } catch (e2) {
               // Manual split as last resort
               const content = str.substring(1, str.length - 1);
-              images = content.split(',').map(s => s.trim().replace(/^['"]|['"]$/g, ''));
+              images = content
+                .split(",")
+                .map((s) => s.trim().replace(/^['"]|['"]$/g, ""));
             }
           }
         } else {
           images = [str];
         }
-      } else if (raw && typeof raw === 'object') {
+      } else if (raw && typeof raw === "object") {
         // If it's an object but not array, try to extract values
         images = Object.values(raw);
       }
@@ -211,17 +213,27 @@ function renderRooms(roomsToRender) {
       images = [];
     }
 
-    console.log("DEBUG: Room " + room.title + " (ID: " + room.id + ") has " + images.length + " images.");
+    console.log(
+      "DEBUG: Room " +
+        room.title +
+        " (ID: " +
+        room.id +
+        ") has " +
+        images.length +
+        " images.",
+    );
 
     if (images.length > 0) {
       const rawPath = images[0];
-      const apiBase = window.API_CONFIG ? window.API_CONFIG.BASE_URL : "http://127.0.0.1:8000";
+      const apiBase = window.API_CONFIG
+        ? window.API_CONFIG.BASE_URL
+        : "http://127.0.0.1:8000";
 
       const getCleanPath = (path) => {
         if (!path) return "";
         let pathStr = path.toString().trim();
         // Remove extra quotes or escaped quotes
-        pathStr = pathStr.replace(/^['"]|['"]$/g, '').replace(/\\"/g, '"');
+        pathStr = pathStr.replace(/^['"]|['"]$/g, "").replace(/\\"/g, '"');
 
         if (pathStr.startsWith("data:")) return pathStr;
         if (pathStr.startsWith("http")) return pathStr;
