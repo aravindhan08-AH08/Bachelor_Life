@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from db.database import get_db
 from models.user_models import Customer  # Correct Model-ah import pannunga
 from schema.user_schema import UserCreate, UserResponse, LoginRequest
-from core.security import get_password_hash, verify_password, create_access_token
+from core.security import get_password_hash, verify_password
 from typing import List
 
 router = APIRouter(prefix="/user", tags=["User"])
@@ -91,13 +91,8 @@ def login_user(data: LoginRequest, db: Session = Depends(get_db)):
     if not is_verified:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    # Generate token (Even if frontend don't use it yet)
-    access_token = create_access_token(data={"sub": user.email})
-
     return {
         "message": "Login successful",
-        "access_token": access_token,
-        "token_type": "bearer",
         "user": {
             "id": user.id,
             "name": user.name,

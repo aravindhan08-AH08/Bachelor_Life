@@ -6,7 +6,7 @@ from models.room_models import Room
 from models.booking_models import Booking 
 from schema.owner_schema import OwnerCreate, OwnerResponse, OwnerDashboardResponse
 from schema.user_schema import LoginRequest
-from core.security import get_password_hash, verify_password, create_access_token
+from core.security import get_password_hash, verify_password
 
 router = APIRouter(prefix="/owner", tags=["Owner"])
 
@@ -60,12 +60,8 @@ def login_owner(data: LoginRequest, db: Session = Depends(get_db)):
     if not is_verified:
         raise HTTPException(status_code=401, detail="Invalid email or password")
 
-    access_token = create_access_token(data={"sub": owner.email})
-
     return {
         "message": "Login successful",
-        "access_token": access_token,
-        "token_type": "bearer",
         "user": {
             "id": owner.id,
             "name": owner.owner_name,
