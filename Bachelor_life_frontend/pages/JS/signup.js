@@ -105,7 +105,7 @@ if (signupForm) {
       console.error(error);
       alert(
         "Connection Error. The backend might be offline or blocked by CORS. Details: " +
-          error.message,
+        error.message,
       );
     }
   });

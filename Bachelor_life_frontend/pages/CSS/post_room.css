@@ -100,11 +100,9 @@ body {
 }
 
 .form-header {
-  background: linear-gradient(
-    135deg,
-    var(--primary-blue),
-    var(--success-green)
-  );
+  background: linear-gradient(135deg,
+      var(--primary-blue),
+      var(--success-green));
   color: var(--white);
   padding: 35px;
 }
@@ -243,6 +241,7 @@ footer a:hover {
 
 /* --- Tablet Devices (max-width: 1024px) --- */
 @media (max-width: 1024px) {
+
   /* General Spacing */
   .container,
   nav,
@@ -265,6 +264,7 @@ footer a:hover {
 
 /* --- Mobile Devices (max-width: 768px) --- */
 @media (max-width: 768px) {
+
   /* Navbar Adjustments */
   nav,
   .navbar,
@@ -356,6 +356,7 @@ footer a:hover {
 
 /* --- Small Phones (max-width: 480px) --- */
 @media (max-width: 480px) {
+
   .container,
   nav,
   .navbar,

@@ -86,7 +86,7 @@ section {
   align-items: center;
 }
 
-.about > div {
+.about>div {
   padding: 30px;
   max-width: 800px;
   margin: 40px auto;
@@ -167,6 +167,7 @@ button:hover {
 
 /* --- Tablet Devices (max-width: 1024px) --- */
 @media (max-width: 1024px) {
+
   /* General Spacing */
   .container,
   nav,
@@ -189,6 +190,7 @@ button:hover {
 
 /* --- Mobile Devices (max-width: 768px) --- */
 @media (max-width: 768px) {
+
   /* Navbar Adjustments */
   nav,
   .navbar,
@@ -280,6 +282,7 @@ button:hover {
 
 /* --- Small Phones (max-width: 480px) --- */
 @media (max-width: 480px) {
+
   .container,
   nav,
   .navbar,

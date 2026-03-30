@@ -189,6 +189,7 @@ footer a:hover {
 
 /* --- Tablet Devices (max-width: 1024px) --- */
 @media (max-width: 1024px) {
+
   .container,
   nav,
   .navbar,
@@ -199,6 +200,7 @@ footer a:hover {
 
 /* --- Mobile Devices (max-width: 768px) --- */
 @media (max-width: 768px) {
+
   nav,
   .navbar,
   header,
