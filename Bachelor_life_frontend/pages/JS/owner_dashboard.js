@@ -116,7 +116,6 @@ async function renderDashboard() {
           // Handle spaces with encodeURI
           let finalUrl = `${apiBase}/${cleanP}`;
           finalUrl = encodeURI(finalUrl);
-          console.log("DEBUG: Final Image URL (Dashboard):", finalUrl);
           return finalUrl;
         };
 

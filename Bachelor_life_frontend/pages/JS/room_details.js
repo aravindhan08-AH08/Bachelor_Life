@@ -187,7 +187,6 @@ function renderRoomDetails(room) {
     gallery.innerHTML = "";
 
     const rawImages = room.image_url;
-    console.log("DEBUG: rawImages from API:", rawImages);
 
     // ULTRA-ROBUST Image URL Parsing
     let images = [];

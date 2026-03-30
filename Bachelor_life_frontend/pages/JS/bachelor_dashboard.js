@@ -60,8 +60,6 @@ function renderBookings(bookings) {
   const confirmedRequests = document.getElementById("confirmedRequests");
   const rejectedRequests = document.getElementById("rejectedRequests");
 
-  console.log("DEBUG: Bookings for stats:", bookings);
-
   if (totalRequests) totalRequests.textContent = bookings.length;
 
   const requestedCount = bookings.filter((b) => {
@@ -70,7 +68,6 @@ function renderBookings(bookings) {
   }).length;
   if (pendingRequests) {
     pendingRequests.textContent = requestedCount;
-    console.log("DEBUG: Updated Requested Count:", requestedCount);
   }
 
   const approvedCount = bookings.filter((b) => {
@@ -79,7 +76,6 @@ function renderBookings(bookings) {
   }).length;
   if (confirmedRequests) {
     confirmedRequests.textContent = approvedCount;
-    console.log("DEBUG: Updated Approved Count:", approvedCount);
   }
 
   const rejectedCount = bookings.filter((b) => {
@@ -88,7 +84,6 @@ function renderBookings(bookings) {
   }).length;
   if (rejectedRequests) {
     rejectedRequests.textContent = rejectedCount;
-    console.log("DEBUG: Updated Rejected Count:", rejectedCount);
   }
 
   if (bookings.length === 0) {

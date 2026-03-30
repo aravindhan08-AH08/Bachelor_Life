@@ -213,16 +213,6 @@ function renderRooms(roomsToRender) {
       images = [];
     }
 
-    console.log(
-      "DEBUG: Room " +
-        room.title +
-        " (ID: " +
-        room.id +
-        ") has " +
-        images.length +
-        " images.",
-    );
-
     if (images.length > 0) {
       const rawPath = images[0];
       const apiBase = window.API_CONFIG
