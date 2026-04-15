@@ -28,7 +28,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 3. Search Logic Redirect
+  // 3. Price Slider + / - Buttons
+  const priceSlider = document.getElementById("price");
+  const priceLabel = document.getElementById("price-label");
+  const priceDecrease = document.getElementById("price-decrease");
+  const priceIncrease = document.getElementById("price-increase");
+
+  function formatPrice(value) {
+    return `Max: ₹${parseInt(value).toLocaleString("en-IN")}`;
+  }
+
+  if (priceSlider && priceLabel) {
+    priceSlider.addEventListener("input", () => {
+      priceLabel.textContent = formatPrice(priceSlider.value);
+    });
+  }
+
+  if (priceDecrease && priceSlider) {
+    priceDecrease.addEventListener("click", () => {
+      const step = parseInt(priceSlider.step) || 1000;
+      const min = parseInt(priceSlider.min) || 1000;
+      const newVal = Math.max(min, parseInt(priceSlider.value) - step);
+      priceSlider.value = newVal;
+      if (priceLabel) priceLabel.textContent = formatPrice(newVal);
+    });
+  }
+
+  if (priceIncrease && priceSlider) {
+    priceIncrease.addEventListener("click", () => {
+      const step = parseInt(priceSlider.step) || 1000;
+      const max = parseInt(priceSlider.max) || 50000;
+      const newVal = Math.min(max, parseInt(priceSlider.value) + step);
+      priceSlider.value = newVal;
+      if (priceLabel) priceLabel.textContent = formatPrice(newVal);
+    });
+  }
+
+  // 4. Search Logic Redirect
   const searchBtn = document.querySelector(".search-btn");
   if (searchBtn) {
     searchBtn.addEventListener("click", () => {

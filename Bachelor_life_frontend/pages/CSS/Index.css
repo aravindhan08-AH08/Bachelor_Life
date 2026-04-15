@@ -173,6 +173,37 @@ select {
   cursor: pointer;
 }
 
+.slider-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.slider-btn {
+  width: 26px;
+  height: 26px;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  color: #333;
+  border-radius: 4px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.slider-btn:hover {
+  background: #e8e8e8;
+}
+
+.slider-btn:active {
+  background: #ddd;
+}
+
 .search-btn {
   background-color: var(--primary-blue);
   color: var(--white);

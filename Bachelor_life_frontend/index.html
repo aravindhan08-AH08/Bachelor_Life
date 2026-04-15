@@ -55,8 +55,10 @@
         </div>
 
         <div class="price-slider-container">
-          <label for="price">Max: ₹29,000</label>
-          <input type="range" id="price" min="10000" max="50000" value="29000" class="price-slider" />
+          <label for="price" id="price-label">Max: ₹29,000</label>
+          <div class="slider-controls">
+            <input type="range" id="price" min="1000" max="50000" step="1000" value="29000" class="price-slider" />
+          </div>
         </div>
 
         <button class="search-btn">

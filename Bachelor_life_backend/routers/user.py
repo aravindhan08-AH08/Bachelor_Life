@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.database import get_db
-from models.user_models import Customer  # Correct Model-ah import pannunga
+from models.user_models import Customer 
 from schema.user_schema import UserCreate, UserResponse, LoginRequest
 from core.security import get_password_hash, verify_password
 from typing import List
