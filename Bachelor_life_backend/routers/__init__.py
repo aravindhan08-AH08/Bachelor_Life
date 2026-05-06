@@ -1,1 +1,1 @@
-from . import room, owner, user, Booking, user_dashboard
+from . import room, owner, user, booking, user_dashboard

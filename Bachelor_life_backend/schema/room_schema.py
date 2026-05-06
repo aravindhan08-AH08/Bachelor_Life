@@ -8,7 +8,6 @@ class RoomCreate(BaseModel):
     deposit: int
     room_type: str
     description: str
-    # Idhu dhaan sharing limit (1 to 4)
     max_persons: int = 1
     bachelor_allowed: bool = True
     wifi: bool = False
