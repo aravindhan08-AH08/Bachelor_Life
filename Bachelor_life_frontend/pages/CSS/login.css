@@ -133,6 +133,29 @@ nav {
   outline: none;
 }
 
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  margin-bottom: 0;
+}
+
+.password-wrapper i {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #666;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.password-wrapper i:hover {
+  color: var(--primary-blue);
+}
+
 .input-group input:focus {
   border-color: #2563eb;
 }

@@ -168,6 +168,30 @@ select {
   background-color: white;
 }
 
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.password-wrapper input {
+  margin-bottom: 0;
+}
+
+.password-wrapper i {
+  position: absolute;
+  right: 15px;
+  cursor: pointer;
+  color: var(--text-light);
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.password-wrapper i:hover {
+  color: var(--dark-blue);
+}
+
 input:focus,
 select:focus {
   border-color: #3b82f6;
