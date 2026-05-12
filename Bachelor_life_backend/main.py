@@ -11,7 +11,11 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
-from routers import room as room_router, booking as booking_router, user as user_router, owner as owner_router, user_dashboard as user_dashboard_router
+import routers.room as room_router
+import routers.booking as booking_router
+import routers.user as user_router
+import routers.owner as owner_router
+import routers.user_dashboard as user_dashboard_router
 from db.database import Base, engine
 from models import Owner, Customer, Room, Booking # Ensures models are in metadata
 
