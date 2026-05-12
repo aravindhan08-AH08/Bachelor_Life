@@ -7,7 +7,18 @@ from typing import Optional, List
 import shutil
 import os
 
+import cloudinary
+import cloudinary.uploader
+
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
+
+# Cloudinary Configuration
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True
+)
 
 UPLOAD_DIR = "static/room_images"
 try:
@@ -93,16 +104,14 @@ async def create_room(
     if not owner:
         raise HTTPException(status_code=404, detail="Owner email not found!")
 
-    # Conversion to Base64 (Vercel Friendly)
-    base64_images = []
+    # Cloudinary Upload (Vercel Friendly)
+    image_urls = []
     if files:
         for file in files:
             if file.filename:
-                contents = await file.read()
-                # Encode to base64
-                encoded = base64.b64encode(contents).decode("utf-8")
-                mime_type = file.content_type or "image/jpeg"
-                base64_images.append(f"data:{mime_type};base64,{encoded}")
+                # Upload directly to Cloudinary
+                upload_result = cloudinary.uploader.upload(file.file, folder="bachelor_life/rooms")
+                image_urls.append(upload_result["secure_url"])
 
     # Handle optional video upload
     video_url = ""
@@ -122,7 +131,7 @@ async def create_room(
         kitchen_access=kitchen_access, parking=parking, laundry=laundry,
         security=security, gym=gym, cctv=cctv, 
         semi_furnished=semi_furnished, gender=gender,
-        image_url=base64_images, # Base64 data saved here
+        image_url=image_urls, # Cloudinary URLs saved here
         video_url=video_url,
         is_available=is_available, owner_id=owner.id, is_approved=True 
     )
@@ -177,14 +186,12 @@ async def update_room(
         room.video_url = f"static/room_videos/{video_file.filename}"
 
     if files:
-        new_base64_images = []
+        new_image_urls = []
         for file in files:
             if file.filename:
-                contents = await file.read()
-                encoded = base64.b64encode(contents).decode("utf-8")
-                mime_type = file.content_type or "image/jpeg"
-                new_base64_images.append(f"data:{mime_type};base64,{encoded}")
-        room.image_url = new_base64_images
+                upload_result = cloudinary.uploader.upload(file.file, folder="bachelor_life/rooms")
+                new_image_urls.append(upload_result["secure_url"])
+        room.image_url = new_image_urls
 
     room.title = title
     room.location = location
