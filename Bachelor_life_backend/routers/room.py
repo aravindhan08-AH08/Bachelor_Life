@@ -6,33 +6,15 @@ from models.owner_models import Owner
 from typing import Optional, List
 import shutil
 import os
-
-import cloudinary
-import cloudinary.uploader
+import base64
 
 router = APIRouter(prefix="/rooms", tags=["Rooms"])
-
-# Cloudinary Configuration
-cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
-    secure=True
-)
-
-UPLOAD_DIR = "static/room_images"
-try:
-    os.makedirs(UPLOAD_DIR, exist_ok=True)
-except OSError:
-    print(f"Directory {UPLOAD_DIR} could not be created (read-only filesystem)")
 
 # 1. GET ALL ROOMS
 @router.get("/")
 def get_all_rooms(db: Session = Depends(get_db)):
     rooms = db.query(Room).filter(Room.is_approved == True, Room.is_available == True).all()
     
-    # PERFORMANCE OPTIMIZATION: List view-ukku ella images-um koodathalai (High data usage)
-    # Mudhal image-ai mattum anuppuvom, ithu page-ai romba fast-aakkum.
     result = []
     for r in rooms:
         data = {c.name: getattr(r, c.name) for c in r.__table__.columns}
@@ -58,7 +40,6 @@ def get_room_details(room_id: int, db: Session = Depends(get_db)):
     if not room:
         raise HTTPException(status_code=404, detail="Room not found")
     
-    # Add owner details directly to the response object for frontend ease
     result = {c.name: getattr(room, c.name) for c in room.__table__.columns}
     if room.owner:
         result["owner_name"] = room.owner.owner_name
@@ -66,8 +47,6 @@ def get_room_details(room_id: int, db: Session = Depends(get_db)):
         result["owner_phone"] = room.owner.phone
         
     return result
-
-import base64
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_room(
@@ -96,7 +75,6 @@ async def create_room(
     video_file: Optional[UploadFile] = File(None),
     db: Session = Depends(get_db)
 ):
-    # Constraint Check
     if sharing_capacity > 10:
         raise HTTPException(status_code=400, detail="Maximum 10 persons only allowed!")
 
@@ -104,24 +82,15 @@ async def create_room(
     if not owner:
         raise HTTPException(status_code=404, detail="Owner email not found!")
 
-    # Cloudinary Upload (Vercel Friendly)
-    image_urls = []
-    if files:
-        for file in files:
-            if file.filename:
-                # Upload directly to Cloudinary
-                upload_result = cloudinary.uploader.upload(file.file, folder="bachelor_life/rooms")
-                image_urls.append(upload_result["secure_url"])
-
-    # Handle optional video upload
-    video_url = ""
-    if video_file and video_file.filename:
-        # For simplicity, we store the filename if it was uploaded. 
-        # On Vercel this is tricky, usually we'd use a cloud storage URL.
-        # For now, we'll just handle it as a static path or placeholder.
-        video_url = f"static/room_videos/{video_file.filename}"
-        # We don't save to disk here because Vercel is read-only.
-        # In a real app, you'd upload to S3/Cloudinary.
+    # Base64 Image Processing (Vercel Friendly)
+    base64_images = []
+    for file in files:
+        if file.filename:
+            content = await file.read()
+            ext = file.filename.split('.')[-1].lower()
+            mime = f"image/{ext}" if ext != 'jpg' else "image/jpeg"
+            base64_str = f"data:{mime};base64,{base64.b64encode(content).decode()}"
+            base64_images.append(base64_str)
 
     new_room = Room(
         title=title, location=location, rent=rent, room_type=room_type,
@@ -131,8 +100,7 @@ async def create_room(
         kitchen_access=kitchen_access, parking=parking, laundry=laundry,
         security=security, gym=gym, cctv=cctv, 
         semi_furnished=semi_furnished, gender=gender,
-        image_url=image_urls, # Cloudinary URLs saved here
-        video_url=video_url,
+        image_url=base64_images,
         is_available=is_available, owner_id=owner.id, is_approved=True 
     )
     
@@ -182,16 +150,16 @@ async def update_room(
     if not owner or room.owner_id != owner.id:
         raise HTTPException(status_code=403, detail="Owner email mismatch!")
 
-    if video_file and video_file.filename:
-        room.video_url = f"static/room_videos/{video_file.filename}"
-
     if files:
-        new_image_urls = []
+        base64_images = []
         for file in files:
             if file.filename:
-                upload_result = cloudinary.uploader.upload(file.file, folder="bachelor_life/rooms")
-                new_image_urls.append(upload_result["secure_url"])
-        room.image_url = new_image_urls
+                content = await file.read()
+                ext = file.filename.split('.')[-1].lower()
+                mime = f"image/{ext}" if ext != 'jpg' else "image/jpeg"
+                base64_str = f"data:{mime};base64,{base64.b64encode(content).decode()}"
+                base64_images.append(base64_str)
+        room.image_url = base64_images
 
     room.title = title
     room.location = location
