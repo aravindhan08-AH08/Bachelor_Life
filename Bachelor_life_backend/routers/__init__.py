@@ -1,1 +1,1 @@
-from . import room, owner, user, booking, user_dashboard
+# Empty init
